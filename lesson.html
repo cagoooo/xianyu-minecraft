@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>教案與教師手冊｜鱻魚特色學園</title>
+<meta name="description" content="鱻魚特色學園 Minecraft 教育版課程的 3 節課教案、課前準備、操作說明與疑難排解，可直接列印或存成 PDF。">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=1.2.0">
+<style>
+  .doc { display: grid; grid-template-columns: 260px 1fr; gap: 36px; align-items: start; padding-top: 32px; padding-bottom: 56px; }
+  .toc { position: sticky; top: 84px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; }
+  .toc strong { display: block; margin-bottom: 8px; }
+  .toc a { display: block; padding: 5px 0; text-decoration: none; color: var(--ink-soft); font-size: var(--fs-sm); }
+  .toc a:hover { color: var(--water-deep); }
+  .toc .btn { width: 100%; justify-content: center; margin-top: 14px; }
+  .doc-body h1 { font-size: clamp(1.8rem, 3vw, 2.6rem); margin: 0 0 6px; }
+  .doc-body > p.sub { color: var(--ink-soft); margin: 0 0 24px; }
+  .sec { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px 30px; margin-bottom: 24px; break-inside: avoid-page; }
+  .sec h2 { font-size: var(--fs-lg); margin: 0 0 14px; padding-left: 12px; border-left: 6px solid var(--fish); }
+  .sec h3 { font-size: var(--fs-md); margin: 18px 0 8px; }
+  .meta { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .meta div { background: #faf6ec; border-radius: 10px; padding: 10px 14px; }
+  .meta b { display: block; font-size: var(--fs-sm); color: var(--ink-soft); font-weight: 700; }
+  .lesson-table th { width: 7.5em; }
+  .lesson-table td:first-child { white-space: nowrap; font-weight: 700; }
+  .check li { list-style: none; position: relative; padding-left: 1.6em; margin-bottom: 6px; }
+  .check li::before { content: "□"; position: absolute; left: 0; }
+  .two { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 18px; }
+  .doc small { font-size: .9em; }
+  .pill { display: inline-block; background: #eef3f8; color: var(--water-deep); border-radius: 999px; padding: 1px 10px; font-size: var(--fs-xs); font-weight: 700; margin-right: 6px; }
+  @media (max-width: 900px) { .doc { grid-template-columns: 1fr; } .toc { position: static; } .sec { padding: 20px 18px; } }
+  @media print {
+    html { font-size: 14px; }
+    .topbar, .toc, .site-footer, .legal { display: none !important; }
+    .doc { display: block; padding: 0; max-width: none; }
+    .sec { border: 0; padding: 0 0 8px; margin-bottom: 14px; }
+    .sec h2 { break-after: avoid; }
+    @page { size: A4; margin: 14mm; }
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="assets/icon.svg" alt="">鱻魚特色學園</a>
+    <nav class="topnav" aria-label="頁面導覽">
+      <a href="index.html#download">下載與匯入</a>
+      <a href="sheets.html">學習單</a>
+      <a href="certificate.html">印通關證書</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap doc">
+  <aside class="toc" aria-label="目錄">
+    <strong>目錄</strong>
+    <a href="#overview">一、課程概要</a>
+    <a href="#goals">二、學習目標</a>
+    <a href="#prep">三、課前準備</a>
+    <a href="#l1">四、第 1 節：鱻魚學園闖關</a>
+    <a href="#l2">五、第 2 節：石門走讀（上）</a>
+    <a href="#l3">六、第 3 節：石門走讀（下）＋分享</a>
+    <a href="#assess">七、評量</a>
+    <a href="#diff">八、分年級調整</a>
+    <a href="#ops">九、老師操作說明</a>
+    <a href="#trouble">十、疑難排解</a>
+    <button class="btn btn-main" type="button" onclick="window.print()">🖨 列印／存成 PDF</button>
+  </aside>
+
+  <article class="doc-body">
+    <h1>教案與教師手冊</h1>
+    <p class="sub">鱻魚特色學園｜Minecraft 教育版課程世界・桃園市龍潭區石門國民小學</p>
+
+    <section class="sec" id="overview">
+      <h2>一、課程概要</h2>
+      <div class="meta">
+        <div><b>適用年級</b>中年級（三、四年級），可調整給低、高年級</div>
+        <div><b>節數</b>3 節，每節 40 分鐘</div>
+        <div><b>形式</b>每位學生一台裝置、各開一份世界檔</div>
+        <div><b>需要</b>Minecraft 教育版、學校帳號、學生版世界檔</div>
+        <div><b>領域</b>語文、自然、社會、環境教育（跨領域）</div>
+        <div><b>成果</b>3 份學習單、遊戲內通關證書（可在網站印出）</div>
+      </div>
+      <p>學生在照真實地圖縮小的石門地區裡闖關：先在鱻魚學園認識「鱻」字、魚的身體和石門水庫，再拿通行證到石門地圖走讀 6 個景點、7 個環境教育點，途中完成垃圾分類、隨手關燈、冷氣調溫、太陽能等生活任務。關主「阿凱老師」用真人聲音帶路，每個地點有不同背景音樂。</p>
+    </section>
+
+    <section class="sec" id="goals">
+      <h2>二、學習目標</h2>
+      <ol>
+        <li>認識「鱻」是「鮮」的異體字，能說出部首與筆畫數。</li>
+        <li>說出魚用鰓呼吸、鰭與側線的功能。</li>
+        <li>認識石門水庫的位置（大漢溪）、完工年代與主要功能。</li>
+        <li>走讀石門地區景點，連結「水的旅程」：雨水 → 大漢溪 → 石門水庫 → 淨水場 → 家裡的水龍頭。</li>
+        <li>在生活任務中練習正確垃圾分類、隨手關燈、冷氣調到 26～28 度，理解太陽能發電與太陽方位的關係。</li>
+        <li>提出一件自己願意做到的環保行動。</li>
+      </ol>
+      <p><span class="pill">議題</span>環境教育（能源資源永續、氣候變遷）、戶外教育（在地家鄉）。<small>※ 課綱學習表現代碼尚未逐條對照。</small></p>
+    </section>
+
+    <section class="sec" id="prep">
+      <h2>三、課前準備（檢查表）</h2>
+      <div class="two">
+        <div>
+          <h3>一週前</h3>
+          <ul class="check">
+            <li>確認學校有 Minecraft 教育版授權，學生能用教育雲帳號登入</li>
+            <li>每台裝置安裝 Minecraft 教育版並登入過一次</li>
+            <li>從課程網站下載學生版世界檔（約 11 MB）</li>
+            <li>老師自己先玩一遍，至少走完第 1 節內容</li>
+          </ul>
+        </div>
+        <div>
+          <h3>上課當天</h3>
+          <ul class="check">
+            <li>每台裝置匯入世界檔，打開看到「鱻魚特色學園」歡迎標題、聽到阿凱老師的聲音</li>
+            <li>喇叭或耳機音量調好（旁白與背景音樂）</li>
+            <li>學習單依節次印好（學習單頁可單獨列印每一份）</li>
+            <li>老師電腦開好一份世界，方便示範與下指令</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="l1">
+      <h2>四、第 1 節：鱻魚學園闖關</h2>
+      <div class="table-scroll"><table class="lesson-table">
+        <thead><tr><th>時間</th><th>活動</th><th>老師提醒</th></tr></thead>
+        <tbody>
+          <tr><td>0–5 分</td><td>說明規則：沿步道走、不破壞建築、看畫面上方「目前任務」；到大門口跟阿凱老師說話</td><td>示範對 NPC 按右鍵、選答案</td></tr>
+          <tr><td>5–30 分</td><td>紅、黃、綠、藍 4 站，每站 3 題；答錯會請你再試一次，答對有說明。4 站都過關會拿到通關證書</td><td>巡視卡關學生；鼓勵先讀題再作答</td></tr>
+          <tr><td>30–37 分</td><td>生活任務：資源回收站垃圾分類、校舍關燈、冷氣調到 26～28 度、太陽能小站</td><td>提醒太陽能題要繞校舍看屋頂的兩面</td></tr>
+          <tr><td>37–40 分</td><td>全班對答案（闖關學習單），預告下一節要去石門地圖</td><td>收學習單或貼在聯絡簿</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="sec" id="l2">
+      <h2>五、第 2 節：石門走讀（上）</h2>
+      <div class="table-scroll"><table class="lesson-table">
+        <thead><tr><th>時間</th><th>活動</th><th>老師提醒</th></tr></thead>
+        <tbody>
+          <tr><td>0–5 分</td><td>回顧上節；跟阿凱老師按「領通行證・出發」，傳送到石門地圖的石門國小</td><td>說明藍色導航線、1 格＝5 公尺</td></tr>
+          <tr><td>5–35 分</td><td>走讀 ① 生態池、② 活魚一條街、③ 十一份園區、④ 三坑老街：到看板前先觀察，再站上紅黃藍地墊作答，寫走讀學習單</td><td>鼓勵用走的（綠色交通會記公尺數）；地形有高低，路線跟著藍色線走</td></tr>
+          <tr><td>35–40 分</td><td>分享看到的景點與反思題</td><td>可用 <code>/scriptevent akai:say 大家到石門國小集合～</code> 集合</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="sec" id="l3">
+      <h2>六、第 3 節：石門走讀（下）＋分享</h2>
+      <div class="table-scroll"><table class="lesson-table">
+        <thead><tr><th>時間</th><th>活動</th><th>老師提醒</th></tr></thead>
+        <tbody>
+          <tr><td>0–25 分</td><td>走讀 ⑤ 三坑自然生態公園、⑥ 南苑生態公園、⑦ 石門大壩；找齊「生態觀察家」4 種生物</td><td>大壩壩頂看得到水庫比下游高：可討論水庫怎麼擋水、溢洪道怎麼放水</td></tr>
+          <tr><td>25–32 分</td><td>完成「水的旅程」，跟阿凱老師按「我的進度」更新證書、記下通關碼</td><td>通關碼 7 碼，到課程網站「印通關證書」輸入</td></tr>
+          <tr><td>32–40 分</td><td>分享：我願意從明天開始做到的一件環保小事；印證書（可回家印）</td><td>證書只寫年班座號，不需要學生姓名</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="sec" id="assess">
+      <h2>七、評量</h2>
+      <ul>
+        <li><b>學習單</b>（3 份）：闖關、環境教育走讀、生活任務，看觀察記錄與反思題。</li>
+        <li><b>通關證書</b>：遊戲自動記錄 4 站、景點、走讀、垃圾分類、關燈、冷氣、太陽能、生態觀察、步行距離；學生輸入通關碼就能印出。</li>
+        <li><b>口頭分享</b>：第 3 節的環保行動承諾。</li>
+      </ul>
+      <p>教師版答案沒有放在公開網站上，需要請洽阿凱老師。</p>
+    </section>
+
+    <section class="sec" id="diff">
+      <h2>八、分年級調整</h2>
+      <div class="table-scroll"><table>
+        <thead><tr><th>年級</th><th>建議</th></tr></thead>
+        <tbody>
+          <tr><td>低年級</td><td>只做第 1 節；每站做第 1 題；阿凱老師的聲音會念題目，老師可再口頭說明</td></tr>
+          <tr><td>中年級</td><td>照本教案 3 節</td></tr>
+          <tr><td>高年級</td><td>加入討論：水庫為什麼會淤積、怎麼做水土保持；小組設計「生態池改善方案」或「學校節電計畫」</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="sec" id="ops">
+      <h2>九、老師操作說明</h2>
+      <h3>匯入世界檔</h3>
+      <p>Windows：雙擊 <code>.mcworld</code> 檔，教育版會自動匯入。iPad：存到「檔案」App → 分享 → Minecraft Education（iPad 尚在測試中）。</p>
+      <h3>上課常用指令（在老師自己的世界聊天框輸入）</h3>
+      <div class="table-scroll"><table>
+        <thead><tr><th>指令</th><th>作用</th></tr></thead>
+        <tbody>
+          <tr><td><code>/scriptevent akai:say 要說的話</code></td><td>以阿凱老師身分全班廣播（同一個世界裡的人）</td></tr>
+          <tr><td><code>/scriptevent akai:patrol off</code>／<code>on</code></td><td>路人 NPC 暫停／繼續走動</td></tr>
+          <tr><td><code>/scriptevent akai:lightson</code></td><td>教室回到上課前：開燈、冷氣 22 度、拆下太陽能板</td></tr>
+          <tr><td><code>/scriptevent akai:ac up</code>／<code>down</code></td><td>示範調冷氣（等同按牆上按鈕）</td></tr>
+          <tr><td><code>/scriptevent akai:resetall</code></td><td>所有任務進度歸零</td></tr>
+        </tbody>
+      </table></div>
+      <h3>每位學生各開一份世界</h3>
+      <p>進度存在學生自己的裝置裡；換裝置要從頭開始，建議同一位學生固定用同一台。</p>
+    </section>
+
+    <section class="sec" id="trouble">
+      <h2>十、疑難排解</h2>
+      <div class="table-scroll"><table>
+        <thead><tr><th>狀況</th><th>處理</th></tr></thead>
+        <tbody>
+          <tr><td>沒有聲音</td><td>檢查喇叭、耳機；遊戲「設定 → 音訊」的主音量與音樂音量</td></tr>
+          <tr><td>學生卡在某一站</td><td>看畫面上方「目前任務」；跟阿凱老師按「我的進度」看還差什麼</td></tr>
+          <tr><td>學生走不到景點</td><td>跟石門地圖的導航員說話，選目的地直接傳送</td></tr>
+          <tr><td>學生想重來</td><td>站上的「從頭再玩一次」；或重新匯入世界檔</td></tr>
+          <tr><td>通關碼印不出證書</td><td>通關碼共 7 碼，不會出現 0、1、I、O；請學生再跟阿凱老師按一次「我的進度」核對</td></tr>
+          <tr><td>學生登入次數不夠</td><td>沒有正式授權的帳號有免費次數限制（依微軟說明約 10 次），請確認學校授權</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-bottom">
+    <p class="site-credit">Made with <span class="site-credit__heart" aria-label="愛心">❤️</span> by
+      <a href="https://www.smes.tyc.edu.tw/modules/school/index.php?department_id=2&zone_id=0&page_id=2&content_id=11&type=news&from_op=all_news#a5" target="_blank" rel="noopener noreferrer" class="site-credit__author">阿凱老師</a>
+      <span class="footer-school"><span class="footer-dot" aria-hidden="true">・</span>桃園市龍潭區石門國民小學</span></p>
+    <p><a href="index.html">← 回到課程首頁</a></p>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>通關證書｜鱻魚特色學園</title>
+<meta name="description" content="輸入在 Minecraft 教育版「鱻魚特色學園」拿到的通關碼，印出自己的 A4 通關證書。">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=1.2.0">
+<style>
+  .cert-page { display: grid; grid-template-columns: minmax(300px, 420px) 1fr; gap: 32px; align-items: start; padding-top: 32px; padding-bottom: 48px; }
+  .cert-form { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; position: sticky; top: 84px; }
+  .cert-form h1 { font-size: var(--fs-lg); margin: 0 0 6px; }
+  .cert-form p { color: var(--ink-soft); font-size: var(--fs-sm); margin: 0 0 16px; }
+  .cert-form label { display: block; font-weight: 700; margin: 14px 0 6px; font-size: var(--fs-sm); }
+  .cert-form input { width: 100%; font: inherit; font-size: var(--fs-md); padding: 10px 14px; border: 2px solid var(--line); border-radius: 10px; min-height: 48px; background: #fff; }
+  .cert-form input:focus { outline: none; border-color: var(--water); }
+  #code { letter-spacing: .2em; text-transform: uppercase; font-weight: 700; }
+  .who-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .cert-form .btn { width: 100%; justify-content: center; margin-top: 18px; }
+  .msg { margin-top: 12px; font-size: var(--fs-sm); min-height: 1.6em; }
+  .msg.err { color: #b3352a; font-weight: 700; }
+  .how { margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--line); font-size: var(--fs-sm); color: var(--ink-soft); }
+  .how ol { padding-left: 20px; margin: 6px 0 0; }
+
+  /* 證書本體：A4 直式比例 */
+  .cert-wrap { display: flex; justify-content: center; }
+  .cert { width: min(100%, 820px); aspect-ratio: 210 / 297; background: #fffdf7; position: relative; padding: 6% 7%; box-shadow: 0 10px 30px rgba(29, 36, 51, .15);
+          border: 14px solid transparent; border-image: linear-gradient(135deg, var(--fish), var(--sun), var(--water)) 1; display: flex; flex-direction: column; }
+  .cert::before { content: ""; position: absolute; inset: 10px; border: 2px solid #e7d9b8; pointer-events: none; }
+  .cert .top { display: flex; align-items: center; justify-content: center; gap: 16px; }
+  .cert .top img { width: clamp(56px, 10%, 90px); height: auto; }
+  .cert .school { font-family: "Noto Serif TC", serif; font-size: clamp(1rem, 2.2vw, 1.5rem); font-weight: 900; color: var(--ink); }
+  .cert h2 { font-family: "Noto Serif TC", serif; text-align: center; font-size: clamp(1.8rem, 5vw, 3.2rem); margin: 4% 0 1%; letter-spacing: .12em; color: #8a5a12; }
+  .cert .sub2 { text-align: center; color: var(--ink-soft); font-size: clamp(.85rem, 1.6vw, 1.05rem); margin: 0 0 4%; }
+  .cert .name { text-align: center; font-size: clamp(1rem, 2.4vw, 1.5rem); margin: 0 0 3%; }
+  .cert .name b { display: inline-block; min-width: 3em; border-bottom: 2px solid var(--ink); text-align: center; }
+  .cert .lead2 { font-size: clamp(.9rem, 1.9vw, 1.15rem); margin: 0 0 2%; }
+  .cert table { width: 100%; border-collapse: collapse; font-size: clamp(.85rem, 1.8vw, 1.1rem); }
+  .cert td { padding: 1.1% 2%; border-bottom: 1px dashed #e2d6bd; }
+  .cert td:last-child { text-align: right; font-weight: 700; white-space: nowrap; }
+  .cert .ok { color: #2f7d32; } .cert .no { color: #a0a0a0; }
+  .cert .foot { margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; font-size: clamp(.8rem, 1.6vw, 1rem); }
+  .cert .sign { text-align: right; }
+  .cert .sign strong { font-family: "Noto Serif TC", serif; font-size: clamp(1rem, 2.2vw, 1.4rem); }
+  .cert .code { color: #8a8a8a; font-size: clamp(.7rem, 1.3vw, .85rem); }
+  .cert.empty { display: grid; place-items: center; color: #9a917e; text-align: center; font-size: var(--fs-md); }
+  @media (max-width: 900px) { .cert-page { grid-template-columns: 1fr; } .cert-form { position: static; } }
+  @media print {
+    @page { size: A4; margin: 0; }
+    html, body { background: #fff; }
+    .topbar, .cert-form, .site-footer, .legal { display: none !important; }
+    .cert-page { display: block; padding: 0; max-width: none; }
+    .cert { width: 210mm; height: 297mm; aspect-ratio: auto; box-shadow: none; padding: 18mm 20mm; }
+    .cert table { font-size: 13pt; } .cert h2 { font-size: 34pt; } .cert .school { font-size: 16pt; }
+    .cert .name { font-size: 16pt; } .cert .lead2 { font-size: 13pt; } .cert .foot { font-size: 12pt; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="assets/icon.svg" alt="">鱻魚特色學園</a>
+    <nav class="topnav" aria-label="頁面導覽">
+      <a href="index.html#download">下載與匯入</a>
+      <a href="sheets.html">學習單</a>
+      <a href="lesson.html">教案與教師手冊</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap cert-page">
+  <form class="cert-form" id="form" autocomplete="off">
+    <h1>🏅 印我的通關證書</h1>
+    <p>在遊戲裡 4 站都過關後，阿凱老師會送你一張「通關證書」，上面有一組<strong>通關碼</strong>。輸入通關碼，就能印出 A4 證書。</p>
+    <label for="code">通關碼（7 碼）</label>
+    <input id="code" inputmode="text" maxlength="9" placeholder="例如 ABC-DEFG" required>
+    <label>年級、班級、座號（可不填，印出後再手寫）</label>
+    <div class="who-row">
+      <input id="grade" inputmode="numeric" maxlength="2" placeholder="年">
+      <input id="cls" inputmode="numeric" maxlength="3" placeholder="班">
+      <input id="seat" inputmode="numeric" maxlength="3" placeholder="座號">
+    </div>
+    <button class="btn btn-main" type="submit">產生證書</button>
+    <button class="btn btn-ghost" type="button" id="print" disabled>🖨 列印／存成 PDF</button>
+    <div class="msg" id="msg" role="status"></div>
+    <div class="how">
+      <strong>通關碼在哪裡？</strong>
+      <ol>
+        <li>打開背包，把游標移到「鱻魚學園通關證書」上，最下面一行就是通關碼。</li>
+        <li>或跟阿凱老師說話，按「我的進度」，聊天框也會出現通關碼。</li>
+        <li>繼續完成走讀、生活任務後再按一次「我的進度」，通關碼會更新成最新成績。</li>
+      </ol>
+      <p style="margin:10px 0 0">通關碼只在你的瀏覽器裡計算，不會傳到任何地方。</p>
+    </div>
+  </form>
+
+  <div class="cert-wrap">
+    <article class="cert empty" id="cert"><div>輸入通關碼後，證書會出現在這裡</div></article>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-bottom">
+    <p class="site-credit">Made with <span class="site-credit__heart" aria-label="愛心">❤️</span> by
+      <a href="https://www.smes.tyc.edu.tw/modules/school/index.php?department_id=2&zone_id=0&page_id=2&content_id=11&type=news&from_op=all_news#a5" target="_blank" rel="noopener noreferrer" class="site-credit__author">阿凱老師</a>
+      <span class="footer-school"><span class="footer-dot" aria-hidden="true">・</span>桃園市龍潭區石門國民小學</span></p>
+    <p><a href="index.html">← 回到課程首頁</a></p>
+  </div>
+</footer>
+
+<script>
+  // 解碼規則和遊戲裡的 certCode()（scripts/akai-gm.src.js）一致，改一邊要一起改另一邊
+  const ABC = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+  const FIELDS = [['stations', 5], ['landmarks', 7], ['walk', 8], ['recycle', 100], ['power', 2], ['eco', 5], ['walk100m', 100], ['solar', 2], ['ac', 2]];
+  const M = 134217728n, A = 48271n, B = 9177n;
+  let inv = A; for (let i = 0; i < 6; i++) inv = (inv * (2n - A * inv)) % M;   // A 的模反元素（2^27，A 為奇數）
+  inv = ((inv % M) + M) % M;
+  function decode(raw) {
+    const s = raw.toUpperCase().replace(/[^0-9A-Z]/g, '');
+    if (s.length !== 7) return null;
+    const d = [...s].map((c) => ABC.indexOf(c));
+    if (d.some((x) => x < 0)) return null;
+    const check = d.slice(0, 6).reduce((t, x, i) => t + x * (i + 1), 0) % 32;
+    if (check !== d[6]) return null;
+    let n = 0n; for (const x of d.slice(0, 6)) n = n * 32n + BigInt(x);
+    if (n >= M) return null;
+    n = (((n - B) % M + M) % M) * inv % M;
+    const out = {};
+    for (const [k, r] of [...FIELDS].reverse()) { out[k] = Number(n % BigInt(r)); n /= BigInt(r); }
+    return n === 0n ? out : null;
+  }
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const mark = (b) => b ? '<span class="ok">✔ 完成</span>' : '<span class="no">－</span>';
+  function render(v, code) {
+    const today = new Date();
+    const roc = `中華民國 ${today.getFullYear() - 1911} 年 ${today.getMonth() + 1} 月 ${today.getDate()} 日`;
+    const blank = (x) => x ? esc(x) : '&nbsp;&nbsp;&nbsp;';
+    $('cert').className = 'cert';
+    $('cert').innerHTML = `
+      <div class="top"><img src="assets/school-logo.png" alt="石門國小校徽"><span class="school">桃園市龍潭區石門國民小學</span></div>
+      <h2>通關證書</h2>
+      <p class="sub2">Minecraft 教育版・鱻魚特色學園</p>
+      <p class="name"><b>${blank($('grade').value)}</b> 年 <b>${blank($('cls').value)}</b> 班 <b>${blank($('seat').value)}</b> 號</p>
+      <p class="lead2">在「鱻魚特色學園」課程世界中，完成了以下挑戰：</p>
+      <table>
+        <tr><td>鱻魚學園 4 站闖關</td><td>${v.stations} / 4 站</td></tr>
+        <tr><td>石門地圖景點打卡</td><td>${v.landmarks} / 6 個</td></tr>
+        <tr><td>環境教育走讀</td><td>${v.walk} / 7 站</td></tr>
+        <tr><td>垃圾分類</td><td>${v.recycle >= 99 ? '99 件以上' : v.recycle + ' 件'}</td></tr>
+        <tr><td>隨手關燈</td><td>${mark(v.power)}</td></tr>
+        <tr><td>冷氣調到 26～28 度</td><td>${mark(v.ac)}</td></tr>
+        <tr><td>太陽能小站</td><td>${mark(v.solar)}</td></tr>
+        <tr><td>生態觀察家</td><td>${v.eco} / 4 種生物</td></tr>
+        <tr><td>綠色交通（步行）</td><td>約 ${(v.walk100m * 100).toLocaleString()} 公尺</td></tr>
+      </table>
+      <div class="foot">
+        <div><div>${roc}</div><div class="code">通關碼 ${esc(code)}</div></div>
+        <div class="sign">頒發<br><strong>關主 阿凱老師</strong></div>
+      </div>`;
+    $('print').disabled = false;
+  }
+  $('code').addEventListener('input', (e) => {
+    const s = e.target.value.toUpperCase().replace(/[^0-9A-Z]/g, '').slice(0, 7);
+    e.target.value = s.length > 3 ? `${s.slice(0, 3)}-${s.slice(3)}` : s;
+  });
+  $('form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const v = decode($('code').value);
+    if (!v) { $('msg').className = 'msg err'; $('msg').textContent = '通關碼不正確，請再對一次（共 7 碼，不會有 0、1、I、O）'; return; }
+    $('msg').className = 'msg'; $('msg').textContent = '證書做好了！可以按「列印／存成 PDF」。';
+    render(v, $('code').value);
+    if (innerWidth < 900) $('cert').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  $('print').addEventListener('click', () => window.print());
+</script>
+</body>
+</html>
