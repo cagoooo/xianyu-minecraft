@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1.0.1">
+<link rel="stylesheet" href="style.css?v=1.1.0">
 </head>
 <body>
 
@@ -56,7 +56,7 @@
         <li><b>12</b><span>闖關題（4 站）</span></li>
         <li><b>6</b><span>家鄉景點</span></li>
         <li><b>7</b><span>環境教育走讀點</span></li>
-        <li><b>4</b><span>生活任務</span></li>
+        <li><b>6</b><span>減碳生活任務</span></li>
         <li><b>20</b><span>位不同造型 NPC</span></li>
       </ul>
     </div>
@@ -81,7 +81,7 @@
         <article class="card" style="--c: var(--water)">
           <span class="tag">地圖</span>
           <h3>石門地圖 6 個景點</h3>
-          <p>依開放街圖的真實道路、河流與建築蓋成，1 格＝5 公尺，導航 NPC 帶你出發。</p>
+          <p>依開放街圖的真實道路、河流與建築蓋成，1 格＝5 公尺，導航 NPC 帶你出發。石門大壩一帶依真實高程做出山丘，水庫水面就在壩頂下方。</p>
           <ul>
             <li>石門大壩與溢洪道</li>
             <li>三坑老街（永福宮、黑白洗）</li>
@@ -101,13 +101,25 @@
         </article>
         <article class="card" style="--c: var(--sun)">
           <span class="tag">生活</span>
-          <h3>減碳生活任務 4 項</h3>
+          <h3>減碳生活任務 6 項</h3>
           <p>跟校園生活連在一起的小任務，遊戲會自動記錄完成情形。</p>
           <ul>
             <li>垃圾分類：撿垃圾、丟進 5 色回收桶</li>
             <li>隨手關燈：關掉教室 6 盞燈</li>
+            <li>冷氣 26～28 度：用牆上的按鈕調溫度</li>
+            <li>太陽能小站：找出發電最多的屋頂</li>
             <li>綠色交通：用走的，記錄步行公尺</li>
             <li>生態觀察家：找到青蛙、蜜蜂、魚、野兔</li>
+          </ul>
+        </article>
+        <article class="card" style="--c: var(--red)">
+          <span class="tag">關主</span>
+          <h3>阿凱老師親自帶路</h3>
+          <p>關主阿凱老師用真人聲音說明任務、介紹景點，走到不同地方會換背景音樂。</p>
+          <ul>
+            <li>約 8 分鐘的真人旁白（關主＋7 個走讀點）</li>
+            <li>學園、街道、老街、大壩、公園各有背景音樂</li>
+            <li>4 站過關得到「通關證書」，記錄每一項成績</li>
           </ul>
         </article>
       </div>
@@ -140,7 +152,7 @@
           <ol>
             <li>老師說明規則：走步道、不破壞建築（5 分）</li>
             <li>紅、黃、綠、藍 4 站 12 題（25 分）</li>
-            <li>生活任務：垃圾分類、教室關燈（7 分）</li>
+            <li>生活任務：垃圾分類、教室關燈、冷氣調溫、太陽能小站（7 分）</li>
             <li>全班對答案、領通行證（3 分）</li>
           </ol>
         </article>
@@ -176,7 +188,7 @@
       <div class="download-box">
         <div class="meta">
           <strong>鱻魚特色學園（學生版）</strong>
-          <span>檔案格式 .mcworld・約 340 KB・版本 2026-11-15</span>
+          <span>檔案格式 .mcworld・約 11 MB（含阿凱老師旁白與背景音樂）・版本 2026-11-15 v1.1</span>
           <span>強制冒險模式（不能拆建築）・出生在學園入口・不連任何伺服器</span>
         </div>
         <a class="btn btn-main" href="downloads/xianyu-academy-student.mcworld" download="鱻魚特色學園_學生版.mcworld">⬇ 下載世界檔</a>
@@ -215,7 +227,8 @@
           <tbody>
             <tr><td><code>/scriptevent akai:say 大家到石門大壩集合～</code></td><td>以阿凱老師的身分全班廣播</td></tr>
             <tr><td><code>/scriptevent akai:patrol off</code>／<code>on</code></td><td>路人 NPC 暫停／繼續走動（需要學生專心時）</td></tr>
-            <tr><td><code>/scriptevent akai:lightson</code></td><td>把教室 6 盞燈重新打開，給下一班練習「隨手關燈」</td></tr>
+            <tr><td><code>/scriptevent akai:lightson</code></td><td>教室回到上課前：6 盞燈打開、冷氣回到 22 度、屋頂太陽能板拆下，給下一班練習</td></tr>
+            <tr><td><code>/scriptevent akai:ac up</code>／<code>down</code></td><td>代替牆上的按鈕調高／調低冷氣 1 度（示範用）</td></tr>
             <tr><td><code>/scriptevent akai:resetall</code></td><td>所有任務進度歸零（主線、走讀、生活任務）</td></tr>
           </tbody>
         </table>
@@ -302,9 +315,9 @@
     <p class="site-credit">Made with <span class="site-credit__heart" aria-label="愛心">❤️</span> by
       <a href="https://www.smes.tyc.edu.tw/modules/school/index.php?department_id=2&zone_id=0&page_id=2&content_id=11&type=news&from_op=all_news#a5" target="_blank" rel="noopener noreferrer" class="site-credit__author">阿凱老師</a>
       <span class="footer-school"><span class="footer-dot" aria-hidden="true">・</span>桃園市龍潭區石門國民小學</span></p>
-    <p class="version-tag">v1.0.0・2026-11-15</p>
+    <p class="version-tag">v1.1.0・2026-11-15</p>
   </div>
-  <p class="legal">地圖資料 © OpenStreetMap 貢獻者（ODbL 授權）。Minecraft 是 Mojang Synergies AB 的商標；本網站為學校教學用途，與 Mojang、Microsoft 沒有關聯。</p>
+  <p class="legal">地圖資料 © OpenStreetMap 貢獻者（ODbL 授權）；高程資料 AWS Terrain Tiles（Mapzen 等公開資料）。背景音樂來自 Pixabay（alexrockbeat、Sonican、kaazoom、Lexin_Music、AtlasAudio），依 Pixabay Content License 使用。阿凱老師的旁白以 Fish Audio 聲音模型生成，聲音為阿凱老師本人授權。Minecraft 是 Mojang Synergies AB 的商標；本網站為學校教學用途，與 Mojang、Microsoft 沒有關聯。</p>
 </footer>
 
 </body>
