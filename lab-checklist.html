@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>資訊組安裝檢查表｜鱻魚特色學園</title>
+<meta name="description" content="鱻魚特色學園 Minecraft 教育版課程：給學校資訊組的電腦教室安裝檢查表，含整間教室設定、逐台檢查表、版本與還原卡排除路徑、驗收簽名，可直接列印。">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=1.2.0">
+<style>
+  .doc { display: grid; grid-template-columns: 260px 1fr; gap: 36px; align-items: start; padding-top: 32px; padding-bottom: 56px; }
+  .toc { position: sticky; top: 84px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; }
+  .toc strong { display: block; margin-bottom: 8px; }
+  .toc a { display: block; padding: 5px 0; text-decoration: none; color: var(--ink-soft); font-size: var(--fs-sm); }
+  .toc a:hover { color: var(--water-deep); }
+  .toc .btn { width: 100%; justify-content: center; margin-top: 14px; }
+  .doc-body h1 { font-size: clamp(1.8rem, 3vw, 2.6rem); margin: 0 0 6px; }
+  .doc-body > p.sub { color: var(--ink-soft); margin: 0 0 24px; }
+  .sec { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px 30px; margin-bottom: 24px; break-inside: avoid-page; }
+  .sec h2 { font-size: var(--fs-lg); margin: 0 0 14px; padding-left: 12px; border-left: 6px solid var(--fish); }
+  .sec h3 { font-size: var(--fs-md); margin: 18px 0 8px; }
+  .meta { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .meta div { background: #faf6ec; border-radius: 10px; padding: 10px 14px; }
+  .meta b { display: block; font-size: var(--fs-sm); color: var(--ink-soft); font-weight: 700; }
+  .lesson-table th { width: 7.5em; }
+  .lesson-table td:first-child { white-space: nowrap; font-weight: 700; }
+  .check li { list-style: none; position: relative; padding-left: 1.6em; margin-bottom: 6px; }
+  .check li::before { content: "□"; position: absolute; left: 0; }
+  .two { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 18px; }
+  .doc small { font-size: .9em; }
+  .pill { display: inline-block; background: #eef3f8; color: var(--water-deep); border-radius: 999px; padding: 1px 10px; font-size: var(--fs-xs); font-weight: 700; margin-right: 6px; }
+  @media (max-width: 900px) { .doc { grid-template-columns: 1fr; } .toc { position: static; } .sec { padding: 20px 18px; } }
+  @media print {
+    html { font-size: 14px; }
+    .topbar, .toc, .site-footer, .legal { display: none !important; }
+    .doc { display: block; padding: 0; max-width: none; }
+    .sec { border: 0; padding: 0 0 8px; margin-bottom: 14px; }
+    .sec h2 { break-after: avoid; }
+    @page { size: A4; margin: 14mm; }
+  }
+  .phase { display:inline-block; background: var(--water); color:#fff; border-radius:8px; padding:2px 12px; font-size: var(--fs-sm); font-weight:900; margin-right:8px; }
+  .who { display:inline-block; background:#fff7df; border:1px solid #f0dd9b; border-radius:999px; padding:1px 12px; font-size: var(--fs-xs); font-weight:700; color:#7a5a00; vertical-align: middle; }
+  .steps { counter-reset: st; padding-left:0; }
+  .steps > li { list-style:none; position:relative; padding:0 0 12px 2.6em; }
+  .steps > li::before { counter-increment: st; content: counter(st); position:absolute; left:0; top:.1em; width:1.9em; height:1.9em; border-radius:50%; background: var(--fish); color:#fff; font-weight:900; display:grid; place-items:center; font-size:.92em; }
+  .steps .check { padding-left: 0; margin-top: 8px; }
+  .warn { background:#fdeeee; border:1px solid #f2c2c2; border-radius:12px; padding:12px 16px; font-size: var(--fs-sm); margin:12px 0; }
+  .keys { display:grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap:10px; }
+  .keys div { background:#faf6ec; border-radius:10px; padding:10px 14px; }
+  kbd { display:inline-block; min-width:1.8em; text-align:center; background:#fff; border:1px solid var(--line); border-bottom-width:3px; border-radius:6px; padding:0 6px; font: 700 .92em/1.6 system-ui, sans-serif; margin-right:4px; }
+  .card-print { border:3px dashed var(--line); }
+  @media print { .card-print { break-before: page; border:2px solid #999; padding: 16px; } .warn, .keys div, .phase, .steps > li::before { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  .ck-meta { display:grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap:10px 18px; margin: 0 0 6px; }
+  .ck-meta label { display:flex; gap:8px; align-items:baseline; font-weight:700; font-size: var(--fs-sm); }
+  .ck-meta input { flex:1; min-width:0; border:0; border-bottom:1.5px solid var(--ink-soft); background:transparent; font: inherit; font-weight:400; padding:2px 4px; }
+  .one th:first-child, .one td:first-child { width: 2.4em; text-align:center; }
+  .one td:last-child { width: 7em; }
+  .box::before { content:"□"; font-size:1.25em; }
+  .pcs { width:100%; border-collapse: collapse; font-size: var(--fs-sm); }
+  .pcs th, .pcs td { border:1px solid var(--line); padding:6px 4px; text-align:center; }
+  .pcs th { background:#eef3f8; font-size: var(--fs-xs); line-height:1.35; }
+  .pcs td:first-child { font-weight:900; }
+  .pcs td:last-child { min-width: 8em; }
+  .pcs td.b::before { content:"□"; font-size:1.2em; color: var(--ink-soft); }
+  .tools { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:0 0 14px; font-size: var(--fs-sm); }
+  .tools input { width: 5em; font: inherit; padding:4px 8px; border:1px solid var(--line); border-radius:8px; }
+  pre.cmd { background:#1f2a36; color:#e8f1f8; border-radius:10px; padding:12px 14px; overflow-x:auto; font-size: var(--fs-xs); white-space: pre-wrap; word-break: break-all; }
+  .sign { display:grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap:14px 24px; margin-top:16px; font-weight:700; }
+  .sign span { display:block; border-bottom:1.5px solid var(--ink-soft); height:2em; }
+  @media print {
+    @page { size: A4; margin: 12mm; }
+    .tools { display:none; }
+    .pcs-sec { break-before: page; }
+    .pcs th, .pcs td { padding:4px 3px; }
+    .pcs th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    pre.cmd { background:#fff; color:#000; border:1px solid #999; }
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="assets/icon.svg" alt="">鱻魚特色學園</a>
+    <nav class="topnav" aria-label="頁面導覽">
+      <a href="lab.html">電腦教室備課流程</a>
+      <a href="lesson.html">教案與教師手冊</a>
+      <a href="index.html#download">下載與匯入</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap doc">
+  <aside class="toc" aria-label="目錄">
+    <strong>目錄</strong>
+    <a href="#a">一、整間教室一次設定</a>
+    <a href="#b">二、逐台檢查表</a>
+    <a href="#c">三、查版本與資料夾的方法</a>
+    <a href="#d">四、驗收簽名</a>
+    <button class="btn btn-main" type="button" onclick="window.print()">🖨 列印／存成 PDF</button>
+    <a class="btn btn-ghost" href="lab.html">← 回備課流程</a>
+  </aside>
+
+  <article class="doc-body">
+    <h1>資訊組安裝檢查表</h1>
+    <p class="sub">鱻魚特色學園（Minecraft 教育版）電腦教室準備・建議上課前兩週完成，交給授課老師前逐項打勾。</p>
+
+    <section class="sec">
+      <div class="ck-meta">
+        <label>電腦教室 <input aria-label="電腦教室"></label>
+        <label>電腦台數 <input aria-label="電腦台數"></label>
+        <label>授課老師 <input aria-label="授課老師"></label>
+        <label>上課日期 <input aria-label="上課日期"></label>
+        <label>負責人員 <input aria-label="負責人員"></label>
+        <label>完成日期 <input aria-label="完成日期"></label>
+      </div>
+    </section>
+
+    <section class="sec" id="a">
+      <h2>一、整間教室一次設定</h2>
+      <div class="table-scroll"><table class="one">
+        <thead><tr><th>✓</th><th>項目</th><th>怎麼做／怎麼確認</th><th>備註</th></tr></thead>
+        <tbody>
+          <tr><td class="box"></td><td><strong>學校授權</strong></td><td>確認學校的 Microsoft 365 教育版授權包含 Minecraft 教育版</td><td></td></tr>
+          <tr><td class="box"></td><td><strong>學生帳號啟用</strong></td><td>上課班級的教育雲帳號都已到 <a href="https://o365.k12cc.tw/" target="_blank" rel="noopener noreferrer">o365.k12cc.tw</a> 啟用 Microsoft 365（部分縣市用縣市單一登入）</td><td></td></tr>
+          <tr><td class="box"></td><td><strong>帳號清單</strong></td><td>全班帳號、密碼清單交給授課老師；學校 Gmail 不能用（會出現 <code>AADSTS500200</code>）</td><td></td></tr>
+          <tr><td class="box"></td><td><strong>安裝方式</strong></td><td>選一種：Microsoft Store、<a href="https://education.minecraft.net/get-started/download" target="_blank" rel="noopener noreferrer">官方下載頁</a> 安裝檔、<code>winget install "Minecraft Education" --scope machine</code>、群組原則或 Intune 派送</td><td></td></tr>
+          <tr><td class="box"></td><td><strong>Store 更新</strong></td><td>用 Microsoft Store 安裝時，先讓其他 App 的更新跑完，否則會擋住安裝</td><td></td></tr>
+          <tr><td class="box"></td><td><strong>還原卡</strong></td><td>上課期間暫停還原，或把世界資料夾設為不還原（路徑見第三節）；課程結束再恢復</td><td></td></tr>
+          <tr><td class="box"></td><td><strong>世界檔</strong></td><td>從 <a href="index.html#download">課程網站</a> 下載學生版世界檔（約 13 MB），放到每台桌面或共用資料夾</td><td></td></tr>
+          <tr><td class="box"></td><td><strong>耳機</strong></td><td>每台一副，插上確認有聲音</td><td></td></tr>
+          <tr><td class="box"></td><td><strong>教師機</strong></td><td>老師電腦同樣安裝、可登入、已匯入世界檔，接上投影</td><td></td></tr>
+        </tbody>
+      </table></div>
+      <p class="warn">⚠️ <strong>清理時不要用「解除安裝」</strong>：官方說明指出，解除安裝會刪掉這台電腦所有使用者建的世界。要清世界，請在遊戲的世界清單按「編輯 → 刪除世界」。</p>
+    </section>
+
+    <section class="sec pcs-sec" id="b">
+      <h2>二、逐台檢查表</h2>
+      <div class="tools">
+        <label>電腦台數 <input id="n" type="number" min="1" max="60" value="30"></label>
+        <span>（改數字後列印，就會印出對應的列數）</span>
+      </div>
+      <div class="table-scroll"><table class="pcs">
+        <thead><tr>
+          <th>電腦</th><th>已安裝<br>教育版</th><th>版本 ≥<br>1.26.3300</th><th>開啟後<br>更新完成</th><th>學生帳號<br>登入成功</th><th>世界檔<br>匯入成功</th><th>耳機<br>有聲音</th><th>對 NPC 按右鍵<br>會跳出題目</th><th>還原卡<br>已排除</th><th>備註</th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table></div>
+      <p><small>抽測建議：每台至少做到「學生帳號登入成功」；「世界檔匯入」「NPC 題目」可抽 3 台完整測，其餘只看能開遊戲。</small></p>
+    </section>
+
+    <section class="sec" id="c">
+      <h2>三、查版本與資料夾的方法</h2>
+      <h3>查版本（Microsoft Store 安裝的版本）</h3>
+      <p>在每台電腦開 PowerShell 貼上這行，會顯示版本號：</p>
+      <pre class="cmd">Get-AppxPackage *MinecraftEducation* | Select-Object Name, Version</pre>
+      <p><small>沒有任何輸出，代表這台沒裝 Store 版本（可能是用安裝檔裝的，或根本沒裝），請直接開遊戲確認。</small></p>
+      <h3>世界資料夾（還原卡要排除的位置，Store 版本）</h3>
+      <pre class="cmd">%LOCALAPPDATA%\Packages\Microsoft.MinecraftEducationEdition_8wekyb3d8bbwe\LocalState\games\com.mojang\minecraftWorlds</pre>
+      <p><small>這個資料夾在<strong>每個 Windows 使用者</strong>自己的設定檔底下；電腦教室若每台共用同一個 Windows 帳號，就排除那個帳號底下的這個資料夾。</small></p>
+    </section>
+
+    <section class="sec" id="d">
+      <h2>四、驗收簽名</h2>
+      <p>以上項目完成後，由授課老師在一週前的試教時再用學生帳號實測一次（見 <a href="lab.html#p2">備課流程第二步</a>）。</p>
+      <div class="sign">
+        <div>資訊組簽名<span></span></div>
+        <div>授課老師簽名<span></span></div>
+        <div>日期<span></span></div>
+      </div>
+    </section>
+  </article>
+</main>
+<script>
+  (function () {
+    var n = document.getElementById('n'), rows = document.getElementById('rows');
+    function draw() {
+      var k = Math.max(1, Math.min(60, parseInt(n.value, 10) || 30)), h = '';
+      for (var i = 1; i <= k; i++) h += '<tr><td>' + (i < 10 ? '0' + i : i) + '</td>' + '<td class="b"></td>'.repeat(8) + '<td></td></tr>';
+      rows.innerHTML = h;
+    }
+    n.addEventListener('input', draw); draw();
+  })();
+</script>
+
+<footer class="site-footer">
+  <div class="footer-bottom">
+    <p class="site-credit">Made with <span class="site-credit__heart" aria-label="愛心">❤️</span> by
+      <a href="https://cagoooo.github.io/Akai/" target="_blank" rel="noopener noreferrer" class="site-credit__author">阿凱老師</a>
+      <span class="footer-school"><span class="footer-dot" aria-hidden="true">・</span>桃園市龍潭區石門國民小學</span></p>
+    <p><a href="index.html">← 回到課程首頁</a></p>
+  </div>
+</footer>
+</body>
+</html>
