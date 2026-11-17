@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>電腦教室備課流程｜鱻魚特色學園</title>
+<meta name="description" content="在學校電腦教室（Windows）開設鱻魚特色學園 Minecraft 教育版課程的備課流程：資訊組準備、授課老師測試、上課開場、下課存檔、課程結束，附學生操作小卡。">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=1.2.0">
+<style>
+  .doc { display: grid; grid-template-columns: 260px 1fr; gap: 36px; align-items: start; padding-top: 32px; padding-bottom: 56px; }
+  .toc { position: sticky; top: 84px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; }
+  .toc strong { display: block; margin-bottom: 8px; }
+  .toc a { display: block; padding: 5px 0; text-decoration: none; color: var(--ink-soft); font-size: var(--fs-sm); }
+  .toc a:hover { color: var(--water-deep); }
+  .toc .btn { width: 100%; justify-content: center; margin-top: 14px; }
+  .doc-body h1 { font-size: clamp(1.8rem, 3vw, 2.6rem); margin: 0 0 6px; }
+  .doc-body > p.sub { color: var(--ink-soft); margin: 0 0 24px; }
+  .sec { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px 30px; margin-bottom: 24px; break-inside: avoid-page; }
+  .sec h2 { font-size: var(--fs-lg); margin: 0 0 14px; padding-left: 12px; border-left: 6px solid var(--fish); }
+  .sec h3 { font-size: var(--fs-md); margin: 18px 0 8px; }
+  .meta { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .meta div { background: #faf6ec; border-radius: 10px; padding: 10px 14px; }
+  .meta b { display: block; font-size: var(--fs-sm); color: var(--ink-soft); font-weight: 700; }
+  .lesson-table th { width: 7.5em; }
+  .lesson-table td:first-child { white-space: nowrap; font-weight: 700; }
+  .check li { list-style: none; position: relative; padding-left: 1.6em; margin-bottom: 6px; }
+  .check li::before { content: "□"; position: absolute; left: 0; }
+  .two { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 18px; }
+  .doc small { font-size: .9em; }
+  .pill { display: inline-block; background: #eef3f8; color: var(--water-deep); border-radius: 999px; padding: 1px 10px; font-size: var(--fs-xs); font-weight: 700; margin-right: 6px; }
+  @media (max-width: 900px) { .doc { grid-template-columns: 1fr; } .toc { position: static; } .sec { padding: 20px 18px; } }
+  @media print {
+    html { font-size: 14px; }
+    .topbar, .toc, .site-footer, .legal { display: none !important; }
+    .doc { display: block; padding: 0; max-width: none; }
+    .sec { border: 0; padding: 0 0 8px; margin-bottom: 14px; }
+    .sec h2 { break-after: avoid; }
+    @page { size: A4; margin: 14mm; }
+  }
+  .phase { display:inline-block; background: var(--water); color:#fff; border-radius:8px; padding:2px 12px; font-size: var(--fs-sm); font-weight:900; margin-right:8px; }
+  .who { display:inline-block; background:#fff7df; border:1px solid #f0dd9b; border-radius:999px; padding:1px 12px; font-size: var(--fs-xs); font-weight:700; color:#7a5a00; vertical-align: middle; }
+  .steps { counter-reset: st; padding-left:0; }
+  .steps > li { list-style:none; position:relative; padding:0 0 12px 2.6em; }
+  .steps > li::before { counter-increment: st; content: counter(st); position:absolute; left:0; top:.1em; width:1.9em; height:1.9em; border-radius:50%; background: var(--fish); color:#fff; font-weight:900; display:grid; place-items:center; font-size:.92em; }
+  .steps .check { padding-left: 0; margin-top: 8px; }
+  .warn { background:#fdeeee; border:1px solid #f2c2c2; border-radius:12px; padding:12px 16px; font-size: var(--fs-sm); margin:12px 0; }
+  .keys { display:grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap:10px; }
+  .keys div { background:#faf6ec; border-radius:10px; padding:10px 14px; }
+  kbd { display:inline-block; min-width:1.8em; text-align:center; background:#fff; border:1px solid var(--line); border-bottom-width:3px; border-radius:6px; padding:0 6px; font: 700 .92em/1.6 system-ui, sans-serif; margin-right:4px; }
+  .card-print { border:3px dashed var(--line); }
+  @media print { .card-print { break-before: page; border:2px solid #999; padding: 16px; } .warn, .keys div, .phase, .steps > li::before { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="assets/icon.svg" alt="">鱻魚特色學園</a>
+    <nav class="topnav" aria-label="頁面導覽">
+      <a href="index.html#download">下載與匯入</a>
+      <a href="lesson.html">教案與教師手冊</a>
+      <a href="sheets.html">學習單</a>
+      <a href="certificate.html">印通關證書</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap doc">
+  <aside class="toc" aria-label="目錄">
+    <strong>目錄</strong>
+    <a href="#who">分工一覽</a>
+    <a href="#p1">一、兩週前：資訊組準備</a>
+    <a href="#p2">二、一週前：授課老師試教</a>
+    <a href="#p3">三、上課前一天：放好世界檔</a>
+    <a href="#p4">四、第 1 節開場 10 分鐘</a>
+    <a href="#p5">五、每節下課前 3 分鐘</a>
+    <a href="#p6">六、課程結束後</a>
+    <a href="#faq">七、電腦教室常見狀況</a>
+    <a href="#card">學生操作小卡（可列印）</a>
+    <button class="btn btn-main" type="button" onclick="window.print()">🖨 列印／存成 PDF</button>
+  </aside>
+
+  <article class="doc-body">
+    <h1>電腦教室備課流程</h1>
+    <p class="sub">在學校電腦教室（Windows）開這門課，照這份從頭做一次就能上課；第一次帶的老師也適用。</p>
+
+    <section class="sec" id="who">
+      <h2>分工一覽</h2>
+      <div class="table-scroll"><table>
+        <thead><tr><th>什麼時候</th><th>誰來做</th><th>要做好什麼</th></tr></thead>
+        <tbody>
+          <tr><td>兩週前</td><td>資訊組</td><td>授權與帳號、每台電腦安裝並更新教育版、還原卡、耳機</td></tr>
+          <tr><td>一週前</td><td>授課老師</td><td>自己玩一遍、在教室的電腦用學生帳號完整測一次、印學習單與操作小卡</td></tr>
+          <tr><td>上課前一天</td><td>授課老師（或資訊組）</td><td>世界檔放到每台電腦、開機讓遊戲更新完</td></tr>
+          <tr><td>每節課</td><td>授課老師</td><td>開場 10 分鐘帶登入與進世界、下課前 3 分鐘帶存檔與記通關碼</td></tr>
+          <tr><td>課程結束</td><td>授課老師</td><td>印通關證書、整理電腦裡的世界</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="sec" id="p1">
+      <h2><span class="phase">一</span>兩週前：資訊組準備 <span class="who">資訊組</span></h2>
+      <h3>1. 授權與帳號</h3>
+      <ul class="check">
+        <li>確認學校有 Minecraft 教育版授權（Microsoft 365 教育版）</li>
+        <li>學生要用<strong>組織帳號</strong>登入：教育部教育雲帳號要先到 <a href="https://o365.k12cc.tw/" target="_blank" rel="noopener noreferrer">o365.k12cc.tw</a> 啟用 Microsoft 365 才能用（部分縣市可用縣市單一登入，請依縣市規定）</li>
+        <li>學校 Gmail 這類帳號在微軟算「個人帳號」，會被拒絕（畫面出現 <code>AADSTS500200</code>）</li>
+        <li>整理全班帳號清單，上課時發給學生（密碼不要寫在黑板上）</li>
+      </ul>
+      <h3>2. 每台電腦安裝教育版</h3>
+      <ul class="check">
+        <li>從 <a href="https://education.minecraft.net/get-started/download" target="_blank" rel="noopener noreferrer">官方下載頁</a> 或 Microsoft Store 安裝「Minecraft Education」</li>
+        <li>多台一次裝：可用 <code>winget install "Minecraft Education" --scope machine</code>（替這台電腦所有使用者安裝），或用群組原則、Intune 派送（官方有說明文件）</li>
+        <li><strong>版本要夠新</strong>：本課程在 1.26.3300 版測試，版本太舊時阿凱老師和任務可能不會動；開遊戲時有更新就先更新</li>
+        <li>用 Microsoft Store 安裝時，其他 App 有待更新會擋住安裝，先把 Store 的更新跑完</li>
+      </ul>
+      <div class="warn">⚠️ <strong>不要用「解除安裝」來清理</strong>：官方說明指出，解除安裝會把這台電腦<strong>所有使用者建的世界</strong>一起刪掉，學生的進度也會不見。</div>
+      <h3>3. 還原卡（還原系統）</h3>
+      <ul class="check">
+        <li>電腦教室若裝了還原卡，<strong>重開機後，匯入的世界和闖關進度都會消失</strong></li>
+        <li>上課這 3 節期間，請暫停還原，或把教育版的世界資料夾設為不還原</li>
+        <li>真的不能暫停時：每節課都要重新匯入；第 2 節要先過第 1 節的 4 站才拿得到通行證，學生得重闖 4 站</li>
+      </ul>
+      <h3>4. 耳機與輸入法</h3>
+      <ul class="check">
+        <li>每台準備耳機：全班同時播阿凱老師的語音和背景音樂，用喇叭會很吵</li>
+        <li>電腦預設輸入法若是中文，學生進遊戲前先按 <kbd>Shift</kbd> 切成「英」，避免中文輸入法攔走按鍵</li>
+      </ul>
+    </section>
+
+    <section class="sec" id="p2">
+      <h2><span class="phase">二</span>一週前：授課老師試教 <span class="who">授課老師</span></h2>
+      <ol class="steps">
+        <li><strong>自己先玩一遍</strong>：從 <a href="index.html#download">課程網站</a> 下載學生版世界檔（約 13 MB），走完第 1 節內容（4 個問答站），知道每一站在哪裡。</li>
+        <li><strong>到電腦教室挑一台，用「學生帳號」完整測一次</strong>，逐項打勾：
+          <ul class="check">
+            <li>學生帳號登入成功</li>
+            <li>雙擊世界檔能匯入，世界清單出現「鱻魚特色學園（學生版）」</li>
+            <li>進世界看到歡迎標題，戴耳機聽得到阿凱老師的聲音和背景音樂</li>
+            <li>對 NPC 按右鍵會跳出題目，答對答錯都有聲音</li>
+            <li>畫面不卡（卡的話：設定 → 視訊 → 顯示距離調小）</li>
+            <li>儲存並離開後重新進世界，進度還在</li>
+            <li>（有還原卡）重開機一次，世界和進度還在</li>
+          </ul>
+        </li>
+        <li><strong>印資料</strong>：<a href="sheets.html">學習單</a> 依節次每人一份；本頁最後的 <a href="#card">學生操作小卡</a> 每台電腦一張（可護貝重複用）。</li>
+        <li><strong>排座位</strong>：每位學生固定坐同一台電腦（建議座號對電腦號）。進度存在那台電腦裡，換電腦要從頭開始。</li>
+      </ol>
+    </section>
+
+    <section class="sec" id="p3">
+      <h2><span class="phase">三</span>上課前一天：放好世界檔 <span class="who">授課老師／資訊組</span></h2>
+      <ol class="steps">
+        <li>把學生版世界檔複製到每台電腦的桌面，或放在全班看得到的共用資料夾（網路芳鄰、廣播系統派送都可以）。</li>
+        <li>每台開機、打開一次教育版，讓更新跑完，避免上課時全班一起等更新。</li>
+        <li>老師電腦也開好一份世界，用來示範；可輸入 <code>/scriptevent akai:remote</code> 拿老師遙控器（集合、廣播只對同一個世界裡的人有效）。</li>
+      </ol>
+      <div class="note">💡 <strong>同一台電腦有好幾個班級要用時</strong>：進度跟著「那一份世界」走，不會分班。每一班各自匯入一份，匯入後在「編輯 → 世界名稱」改成「鱻魚-班級-座號」（例如「鱻魚-401-05」），下次就找得到自己那份。<small>（改名請在一週前的測試一起試過。）</small></div>
+    </section>
+
+    <section class="sec" id="p4">
+      <h2><span class="phase">四</span>第 1 節開場 10 分鐘 <span class="who">授課老師</span></h2>
+      <div class="table-scroll"><table class="lesson-table">
+        <thead><tr><th>時間</th><th>學生做什麼</th><th>老師注意</th></tr></thead>
+        <tbody>
+          <tr><td>0–3 分</td><td>戴耳機、輸入法切「英」、打開 Minecraft Education</td><td>投影示範畫面，發帳號清單</td></tr>
+          <tr><td>3–6 分</td><td>用自己的帳號登入</td><td>第一次登入比較慢；登不進去的先記下來，不要整班停下來等</td></tr>
+          <tr><td>6–8 分</td><td>雙擊桌面的世界檔匯入（已匯入就到「遊玩」選世界）</td><td>匯入完成會跳出提示；多班共用電腦時帶學生改世界名稱</td></tr>
+          <tr><td>8–10 分</td><td>進世界，聽阿凱老師開場，看畫面上方的「目前任務」</td><td>用操作小卡複習：<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 走路、滑鼠右鍵說話</td></tr>
+        </tbody>
+      </table></div>
+      <p>接下來照 <a href="lesson.html#l1">教案第 1 節</a> 進行。第 2、3 節開場只要「登入 → 遊玩 → 選同一份世界」，約 3 分鐘。</p>
+    </section>
+
+    <section class="sec" id="p5">
+      <h2><span class="phase">五</span>每節下課前 3 分鐘 <span class="who">授課老師</span></h2>
+      <ol class="steps">
+        <li>請學生找阿凱老師按「<strong>我的進度</strong>」，把 7 碼<strong>通關碼</strong>寫在學習單上（印證書要用）。</li>
+        <li>按 <kbd>Esc</kbd> →「<strong>儲存並離開</strong>」，回到主畫面再關遊戲。<strong>直接關機，進度可能沒存到。</strong></li>
+        <li>有還原卡又沒辦法暫停時，通關碼就是這節的成績紀錄，一定要記下來。</li>
+      </ol>
+    </section>
+
+    <section class="sec" id="p6">
+      <h2><span class="phase">六</span>課程結束後 <span class="who">授課老師</span></h2>
+      <ul class="check">
+        <li>到 <a href="certificate.html">印通關證書</a> 輸入學生的通關碼，印出證書</li>
+        <li>收回學習單，依 <a href="lesson.html#assess">評量</a> 打分</li>
+        <li>整理電腦：在遊戲的世界清單，對不要的世界按「編輯 → 刪除世界」（不要用解除安裝遊戲的方式清）</li>
+        <li>還原卡恢復原本設定</li>
+      </ul>
+    </section>
+
+    <section class="sec" id="faq">
+      <h2>七、電腦教室常見狀況</h2>
+      <div class="table-scroll"><table>
+        <thead><tr><th>狀況</th><th>處理</th></tr></thead>
+        <tbody>
+          <tr><td>登入出現 <code>AADSTS500200</code></td><td>用了個人帳號（例如學校 Gmail），改用教育雲啟用的 Microsoft 365 帳號</td></tr>
+          <tr><td>登入次數不夠、要求付費</td><td>帳號沒有正式授權，請資訊組確認學校授權</td></tr>
+          <tr><td>按鍵沒反應、角色不會走</td><td>中文輸入法攔走按鍵，按 <kbd>Shift</kbd> 切「英」</td></tr>
+          <tr><td>阿凱老師不說話、任務不出現</td><td>沒戴耳機或音量太小（設定 → 音訊）；或遊戲版本太舊，請資訊組更新</td></tr>
+          <tr><td>上一節的進度不見了</td><td>還原卡把電腦還原了、上次沒有「儲存並離開」，或選到別班那一份世界</td></tr>
+          <tr><td>世界清單有好幾個同名的世界</td><td>重複匯入了。選最近玩過的那份，之後照第三步改名區分</td></tr>
+          <tr><td>畫面卡頓</td><td>設定 → 視訊 → 顯示距離調小，關掉其他開著的程式</td></tr>
+        </tbody>
+      </table></div>
+      <p>遊戲內的問題（卡關、走不到景點、通關碼）請看 <a href="lesson.html#trouble">教案的疑難排解</a>。</p>
+    </section>
+
+    <section class="sec card-print" id="card">
+      <h2>學生操作小卡</h2>
+      <h3>開始玩</h3>
+      <ol class="steps">
+        <li>戴上耳機，按 <kbd>Shift</kbd> 把輸入法切成「英」</li>
+        <li>打開「Minecraft Education」，用老師發的帳號登入</li>
+        <li>第一次：雙擊桌面的世界檔；之後：按「遊玩」→ 選自己那份世界</li>
+        <li>看畫面上方的「目前任務」，跟阿凱老師說話開始闖關</li>
+      </ol>
+      <h3>按鍵</h3>
+      <div class="keys">
+        <div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 前、左、後、右走</div>
+        <div>移動滑鼠　轉頭看方向</div>
+        <div><kbd>空白鍵</kbd> 跳</div>
+        <div>滑鼠<strong>右鍵</strong>　跟 NPC 說話、按按鈕</div>
+        <div><kbd>1</kbd>～<kbd>9</kbd> 換手上拿的東西</div>
+        <div><kbd>Esc</kbd> 暫停、儲存並離開</div>
+      </div>
+      <h3>下課前</h3>
+      <ol class="steps">
+        <li>跟阿凱老師按「我的進度」，把通關碼寫在學習單上：<strong>＿＿＿－＿＿＿＿</strong></li>
+        <li>按 <kbd>Esc</kbd> →「儲存並離開」，再關遊戲</li>
+      </ol>
+    </section>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-bottom">
+    <p class="site-credit">Made with <span class="site-credit__heart" aria-label="愛心">❤️</span> by
+      <a href="https://cagoooo.github.io/Akai/" target="_blank" rel="noopener noreferrer" class="site-credit__author">阿凱老師</a>
+      <span class="footer-school"><span class="footer-dot" aria-hidden="true">・</span>桃園市龍潭區石門國民小學</span></p>
+    <p><a href="index.html">← 回到課程首頁</a></p>
+  </div>
+</footer>
+</body>
+</html>
