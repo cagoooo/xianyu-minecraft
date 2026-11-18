@@ -143,6 +143,20 @@ code { background: #eef0f4; padding: 2px 6px; border-radius: 6px; font-size: 1em
 .version-tag { background: rgba(255, 255, 255, .7); border: 1px solid #d8cdb6; border-radius: 999px; padding: 2px 12px; font-size: var(--fs-xs); }
 .legal { max-width: var(--max); margin: 0 auto; padding: 0 clamp(16px, 2vw, 28px) 22px; font-size: var(--fs-xs); color: #7a7262; }
 
+/* 網頁版入口卡片 */
+.web-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.web-card { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); background: var(--paper); border: 1px solid var(--line); border-left: 8px solid var(--c); border-radius: var(--radius); overflow: hidden; text-decoration: none; color: var(--ink); transition: transform .15s, box-shadow .15s; }
+.web-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(29, 36, 51, .12); }
+.web-card img { width: 100%; height: 100%; min-height: 220px; object-fit: cover; }
+.web-card .bd { padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; }
+.web-card strong { font-size: var(--fs-lg); }
+.web-card .bd > span:not(.tag):not(.go) { color: var(--ink-soft); font-size: var(--fs-sm); }
+.web-card .go { margin-top: auto; font-weight: 900; color: var(--c); }
+.web-card .tag { align-self: flex-start; margin: 0; }
+@media (max-width: 1200px) { .web-card { grid-template-columns: 1fr; } .web-card img { height: auto; aspect-ratio: 16 / 9; min-height: 0; } }
+@media (max-width: 640px) { .web-cards { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .web-card { transition: none; } }
+
 /* 平板 */
 @media (max-width: 900px) {
   .hero .hero-grid { grid-template-columns: 1fr; gap: 28px; }

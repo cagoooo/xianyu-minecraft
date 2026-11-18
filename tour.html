@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>360° 虛擬導覽｜鱻魚特色學園</title>
+<meta name="description" content="在 Minecraft 教育版「鱻魚特色學園」裡拍的 360° 環景：從學園大門、鱻字廣場、生態池，一路走到活魚一條街、十一份、三坑老街、三坑生態公園、南苑和石門大壩。轉動畫面找答案，完成走讀挑戰。">
+<meta property="og:title" content="鱻魚特色學園｜360° 虛擬導覽">
+<meta property="og:description" content="9 個 360° 環景場景，點地標聽阿凱老師說故事、完成環境教育走讀挑戰。">
+<meta property="og:image" content="https://cagoooo.github.io/xianyu-minecraft/assets/pano/dam/thumb.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/pannellum.css">
+<link rel="stylesheet" href="style.css?v=1.3.0">
+<style>
+  .t-head { padding: 22px 0 14px; display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: flex-end; justify-content: space-between; }
+  .t-head h1 { margin: 6px 0 0; font-size: clamp(1.7rem, 3.2vw, 2.6rem); line-height: 1.2; }
+  .t-head p { margin: 4px 0 0; color: var(--ink-soft); }
+  .tour { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; padding-bottom: 28px; align-items: start; }
+  .viewer-box { position: relative; border-radius: var(--radius); overflow: hidden; background: #9cc8ea; box-shadow: 0 10px 30px rgba(29,36,51,.15); border: 4px solid #fff; }
+  #pano { width: 100%; height: clamp(420px, 72vh, 820px); }
+  .scene-bar { position: absolute; right: 12px; top: 12px; max-width: calc(100% - 70px); justify-content: flex-end; z-index: 3; display: flex; gap: 8px; align-items: center; pointer-events: none; }
+  .scene-bar span { background: rgba(20, 28, 40, .72); color: #fff; padding: 6px 14px; border-radius: 999px; font-weight: 900; font-size: var(--fs-sm); }
+  .hint { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 3; background: rgba(20,28,40,.72); color: #fff; border-radius: 999px; padding: 6px 16px; font-size: var(--fs-sm); pointer-events: none; white-space: nowrap; transition: opacity .6s; }
+  .hint.off { opacity: 0; }
+
+  /* 環景上的標記 */
+  .hs { width: 0; height: 0; }
+  .hs .dot { position: absolute; left: -28px; top: -28px; width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; font-size: 26px; border: 3px solid #fff; background: var(--hc); box-shadow: 0 4px 14px rgba(0,0,0,.35); cursor: pointer; animation: pulse 1.8s infinite; }
+  .hs .lbl { position: absolute; left: 50%; top: 34px; transform: translateX(-50%); background: rgba(20,28,40,.8); color: #fff; padding: 3px 10px; border-radius: 999px; font-size: 14px; font-weight: 700; white-space: nowrap; pointer-events: none; }
+  .hs.done .dot { animation: none; opacity: .85; }
+  .hs.done .dot::after { content: "✔"; position: absolute; right: -6px; bottom: -6px; width: 22px; height: 22px; border-radius: 50%; background: #2f7d32; color: #fff; font-size: 13px; display: grid; place-items: center; border: 2px solid #fff; }
+  .hs-story { --hc: var(--fish); }
+  .hs-quiz { --hc: var(--water); }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,.75), 0 4px 14px rgba(0,0,0,.35); } 70% { box-shadow: 0 0 0 16px rgba(255,255,255,0), 0 4px 14px rgba(0,0,0,.35); } 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0), 0 4px 14px rgba(0,0,0,.35); } }
+  @media (prefers-reduced-motion: reduce) { .hs .dot { animation: none; } }
+
+  /* 故事／挑戰卡 */
+  .card-pop { position: absolute; z-index: 5; right: 14px; bottom: 14px; width: min(440px, calc(100% - 28px)); max-height: calc(100% - 28px); overflow-y: auto; background: var(--bg); border-radius: 16px; box-shadow: 0 16px 40px rgba(0,0,0,.35); border-top: 8px solid var(--pc, var(--fish)); padding: 16px 18px 18px; display: none; }
+  .card-pop.show { display: block; }
+  .card-pop .top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .card-pop .top strong { flex: 1; font-size: var(--fs-md); }
+  .card-pop .mn { border: 0; background: #dcecf8; color: var(--water-deep); border-radius: 10px; min-height: 40px; padding: 0 10px; font: inherit; font-size: var(--fs-sm); font-weight: 700; cursor: pointer; white-space: nowrap; }
+  .card-pop.min > :not(.top) { display: none; }
+  .card-pop.min .top { margin: 0; }
+  .card-pop .x { border: 0; background: #e9e1cf; border-radius: 10px; min-width: 40px; min-height: 40px; font: inherit; font-weight: 700; cursor: pointer; }
+  .card-pop .say { display: flex; gap: 10px; align-items: flex-start; }
+  .card-pop .say img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; flex: none; }
+  .card-pop .say p { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; flex: 1; }
+  .card-pop .obs { margin: 10px 0 4px; font-size: var(--fs-sm); color: var(--water-deep); font-weight: 700; }
+  .card-pop .q { font-weight: 900; font-size: var(--fs-md); margin: 8px 0 10px; }
+  .opts { display: grid; gap: 8px; }
+  .opt { display: flex; gap: 10px; align-items: center; width: 100%; text-align: left; font: inherit; font-weight: 700; padding: 10px 12px; min-height: 52px; border-radius: 12px; border: 3px solid var(--line); background: #fff; cursor: pointer; color: var(--ink); }
+  .opt b { flex: none; width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; color: #fff; }
+  .opt[data-k="0"] b { background: #d9483b; } .opt[data-k="1"] b { background: #d9a514; } .opt[data-k="2"] b { background: #2d72c4; }
+  .opt.wrong { opacity: .5; border-color: #e0a29a; animation: shake .35s; }
+  .opt.right { border-color: #2f7d32; background: #eaf6e8; }
+  .opt:disabled { cursor: default; }
+  .opt:focus-visible, .sc:focus-visible, .chip:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+  @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; border: 2px solid var(--line); background: #fff; border-radius: 999px; padding: 6px 14px; font: inherit; font-size: var(--fs-sm); font-weight: 700; cursor: pointer; color: var(--ink); min-height: 40px; text-decoration: none; }
+  .chip[aria-pressed="true"] { border-color: var(--water); background: #e3f1fb; color: var(--water-deep); }
+
+  /* 側欄 */
+  .side { display: flex; flex-direction: column; gap: 14px; }
+  .side .panel { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }
+  .meters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; margin: 8px 0 4px; }
+  .meters div { background: #f6f1e6; border-radius: 10px; padding: 8px 4px; }
+  .meters b { display: block; font-size: 1.5rem; color: var(--water-deep); line-height: 1.2; }
+  .meters span { font-size: var(--fs-xs); color: var(--ink-soft); }
+  .code-box { margin-top: 10px; font-size: var(--fs-sm); }
+  .code-box .code { font-size: 1.5rem; font-weight: 900; letter-spacing: .12em; color: #8a5a12; }
+  .scenes { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .sc { width: 100%; display: grid; grid-template-columns: 92px 1fr; gap: 10px; align-items: center; text-align: left; font: inherit; color: inherit; background: var(--paper); border: 2px solid var(--line); border-radius: 12px; padding: 6px; cursor: pointer; }
+  .sc img { width: 92px; height: 52px; object-fit: cover; border-radius: 8px; }
+  .sc strong { display: block; font-size: var(--fs-sm); line-height: 1.35; }
+  .sc small { color: var(--ink-soft); font-size: var(--fs-xs); }
+  .sc[aria-current="true"] { border-color: var(--water); background: #eaf4fb; }
+  .area { font-size: var(--fs-xs); font-weight: 900; color: var(--ink-soft); margin: 6px 0 0; letter-spacing: .05em; }
+  .navbtns { display: flex; gap: 8px; }
+  .navbtns .btn { flex: 1; justify-content: center; padding: 10px 12px; }
+
+  @media (max-width: 1100px) { .tour { grid-template-columns: 1fr; } .side { display: grid; grid-template-columns: 1fr 1fr; align-items: start; } }
+  @media (max-width: 760px) {
+    .side { grid-template-columns: 1fr; }
+    #pano { height: 62vh; min-height: 360px; }
+    .card-pop { right: 8px; left: 8px; bottom: 8px; width: auto; max-height: 52%; padding: 12px 14px 14px; }
+    .card-pop .top strong { font-size: var(--fs-base); }
+    .opt { min-height: 46px; padding: 8px 10px; }
+    .hint { white-space: normal; text-align: center; width: max-content; max-width: calc(100% - 24px); }
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="assets/icon.svg" alt="">鱻魚特色學園</a>
+    <nav class="topnav" aria-label="頁面導覽">
+      <a href="quest.html">網頁闖關版</a>
+      <a href="tour.html" aria-current="page">360° 虛擬導覽</a>
+      <a href="certificate.html">印證書</a>
+      <a href="index.html">課程首頁</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="t-head">
+    <div>
+      <span class="eyebrow">🧭 360° 虛擬導覽・用手指或滑鼠拖曳轉動畫面</span>
+      <h1>從鱻魚學園走到石門大壩</h1>
+      <p>點 <strong style="color:var(--fish)">📖</strong> 聽阿凱老師說景點故事，點 <strong style="color:var(--water-deep)">❓</strong> 做走讀挑戰：答案就藏在畫面裡，轉一轉找找看！</p>
+    </div>
+    <button class="chip" type="button" id="mute" aria-pressed="false">🔊 語音開著</button>
+  </div>
+
+  <div class="tour">
+    <div class="viewer-box">
+      <div id="pano" role="application" aria-label="360 度環景，可拖曳轉動"></div>
+      <div class="scene-bar"><span id="sceneName">鱻魚學園大門</span></div>
+      <div class="hint" id="hint">👆 拖曳畫面可以轉一圈，滾輪或兩指可以放大</div>
+      <section class="card-pop" id="pop" aria-live="polite"></section>
+    </div>
+
+    <aside class="side">
+      <div class="panel">
+        <strong>我的導覽進度</strong>
+        <div class="meters">
+          <div><b id="mLand">0/6</b><span>石門景點故事</span></div>
+          <div><b id="mWalk">0/7</b><span>走讀挑戰</span></div>
+          <div><b id="mSt">0/4</b><span>網頁闖關</span></div>
+        </div>
+        <div class="code-box" id="codeBox"></div>
+        <div class="row">
+          <button class="chip" type="button" id="doStory">📖 聽這裡的故事</button>
+          <button class="chip" type="button" id="doQuiz">❓ 這裡的走讀挑戰</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="navbtns">
+          <button class="btn btn-ghost" type="button" id="prev">← 上一站</button>
+          <button class="btn btn-main" type="button" id="next">下一站 →</button>
+        </div>
+        <ul class="scenes" id="list" style="margin-top:12px"></ul>
+      </div>
+    </aside>
+  </div>
+  <p class="note" style="margin-top:0">📷 這些環景是在 Minecraft 教育版「鱻魚特色學園」課程世界裡拍的。石門地圖是依 OpenStreetMap 開放資料縮小蓋出來的，跟真實景點的比例、外觀不完全一樣；走讀時請以真實景點的介紹為準。</p>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src="assets/icon.svg" alt="" width="48" height="48">
+      <div><strong>鱻魚特色學園</strong><span>石門國小的 Minecraft 教育版課程世界，網頁版讓沒裝遊戲的裝置也能一起學。</span></div>
+    </div>
+    <ul class="footer-points">
+      <li><span class="fp-icon">🧭</span><div><strong>9 個環景場景</strong><small>學園 3 處＋石門 6 個景點</small></div></li>
+      <li><span class="fp-icon">🌊</span><div><strong>環境教育走讀</strong><small>7 個走讀挑戰，認識水的旅程</small></div></li>
+      <li><span class="fp-icon">🔒</span><div><strong>不蒐集資料</strong><small>不用登入，進度只存在自己的裝置</small></div></li>
+    </ul>
+    <nav class="footer-links" aria-label="快速連結">
+      <a href="quest.html">🎯 網頁闖關版</a>
+      <a href="certificate.html">🏅 印通關證書</a>
+      <a href="sheets.html">🖨 學習單</a>
+      <a href="index.html">🏠 課程首頁</a>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    <p class="site-credit">Made with <span class="site-credit__heart" aria-label="愛心">❤️</span> by
+      <a href="https://cagoooo.github.io/Akai/" target="_blank" rel="noopener noreferrer" class="site-credit__author">阿凱老師</a>
+      <span class="footer-school"><span class="footer-dot" aria-hidden="true">・</span>桃園市龍潭區石門國民小學</span></p>
+    <p class="version-tag">v1.3.0・2026-11-18</p>
+  </div>
+  <p class="legal">環景為 Minecraft 教育版遊戲截圖；環景播放器使用 Pannellum（MIT 授權）。地圖資料 © OpenStreetMap 貢獻者（ODbL 授權）。阿凱老師的旁白以 Fish Audio 聲音模型生成，聲音為阿凱老師本人授權。Minecraft 是 Mojang Synergies AB 的商標；本網站為學校教學用途，與 Mojang、Microsoft 沒有關聯。</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/pannellum.js"></script>
+<script src="assets/js/xianyu-web.js?v=1.3.0"></script>
+<script>
+(function () {
+  'use strict';
+  var P = window.XianyuProgress, V = window.XianyuVoice;
+  // yaw：0 = 正南（剛拍攝時的正前方），正值往右（西）轉；pitch：正值往上
+  var SCENES = [
+    { id: 'gate', area: '鱻魚學園', name: '鱻魚學園大門', yaw: 5, pitch: 2,
+      story: { yaw: 6, pitch: 14, label: '學園大門', voice: 'hub', text: '嗨～我是阿凱老師，這個世界的關主！今天的冒險有兩關：第一關，闖過鱻魚學園的 4 個問答站；第二關，到石門地圖的景點走一走。看到 ❓ 就點下去做走讀挑戰吧！' } },
+    { id: 'plaza', area: '鱻魚學園', name: '「鱻」字廣場', yaw: 15, pitch: 6,
+      story: { yaw: 16, pitch: 22, label: '鱻字雕塑', voice: 'zone_plaza', text: '抬頭看看！三條魚排成一上兩下，就跟「鱻」這個字一模一樣喔～' } },
+    { id: 'pond', area: '鱻魚學園', name: '生態池', yaw: -60, pitch: -12,
+      story: { yaw: -20, pitch: 4, label: '生態池', voice: 'zone_pond', text: '靜靜看，水裡有熱帶魚、鮭魚和鱈魚，你能分辨出來嗎？' },
+      quiz: { yaw: -76, pitch: -34, theme: '水中生物', observe: '轉動畫面，往下看池塘的水面。',
+        q: '池塘水面上漂著的綠色圓葉子，是什麼植物？', o: ['睡蓮的葉子', '海帶', '仙人掌'], a: 0,
+        ok: '答對了！想一想：不同的魚都需要乾淨的水才能一起生活。我們可以做什麼，讓水保持乾淨？' } },
+    { id: 'fish', area: '石門地圖', name: '活魚一條街', yaw: 180, pitch: 0, landmark: true,
+      story: { yaw: -152, pitch: 12, label: '景點故事', voice: 'story_fish', text: '文化路兩旁就是活魚一條街！看看店門口的魚缸和魚形招牌，石門的活魚料理很有名喔～' },
+      quiz: { yaw: 172, pitch: 2, theme: '水質與節約用水', observe: '看看街道兩旁的店門口。',
+        q: '活魚一條街的店門口，擺著什麼來吸引客人？', o: ['養著活魚的魚缸', '聖誕樹', '腳踏車'], a: 0,
+        ok: '答對了！想一想：魚缸要定期換水。換下來的水可以拿去澆花嗎？想一想怎樣不浪費水。' } },
+    { id: 'shiyifen', area: '石門地圖', name: '十一份觀光文化園區', yaw: -20, pitch: 2, landmark: true,
+      story: { yaw: -22, pitch: 8, label: '景點故事', voice: 'story_shiyifen', text: '十一份觀光文化園區是舊市場、花園餐廳和水庫宿舍改造的。找找看牆上的鯨魚壁畫，還有日式宿舍！' },
+      quiz: { yaw: 178, pitch: 6, theme: '舊建築再利用', observe: '轉個身，找一面彩色的壁畫牆。',
+        q: '壁畫上畫的大動物是什麼？', o: ['老虎', '大象', '鯨魚'], a: 2,
+        ok: '答對了！想一想：舊市場、舊宿舍沒有拆掉，而是改造成咖啡店和美術館。這樣做對環境有什麼好處？' } },
+    { id: 'sankeng', area: '石門地圖', name: '三坑老街・黑白洗', yaw: -88, pitch: -4, landmark: true,
+      story: { yaw: -108, pitch: 8, label: '景點故事', voice: 'story_sankeng', text: '三坑老街只有約 104 公尺，號稱全台最短老街！走到盡頭是 1791 年建的永福宮，再去看看以前洗衣服的「黑白洗」。' },
+      quiz: { yaw: -70, pitch: -16, theme: '用水文化', observe: '找找洗衣池，看看水從哪裡來。',
+        q: '黑白洗洗衣池的水，是從哪裡流進來的？', o: ['水龍頭', '水圳（小水道）', '水桶'], a: 1,
+        ok: '答對了！想一想：以前的人用流動的水洗衣服、洗菜。現在用自來水，我們可以怎麼節約用水？' } },
+    { id: 'sankengpark', area: '石門地圖', name: '三坑自然生態公園', yaw: -30, pitch: 0, landmark: true,
+      story: { yaw: -70, pitch: 10, label: '景點故事', voice: 'story_sankengpark', text: '三坑自然生態公園的生態湖中間有湖心亭，走木拱橋過去看看！岸邊黃色、紅色的樹是台灣欒樹，秋天會變色。' },
+      quiz: { yaw: 29, pitch: 14, theme: '原生植物', observe: '看看湖邊開黃色、紅色花的樹。',
+        q: '湖邊開黃色、紅色的樹，是哪一種台灣原生樹？', o: ['台灣欒樹', '椰子樹', '仙人掌'], a: 0,
+        ok: '答對了！想一想：種原生植物，可以讓本地的鳥和昆蟲有食物和家。你家附近有哪些原生植物？' } },
+    { id: 'nanyuan', area: '石門地圖', name: '南苑生態公園', yaw: 100, pitch: 4, landmark: true,
+      story: { yaw: 135, pitch: 10, label: '景點故事', voice: 'story_nanyuan', text: '南苑生態公園附近有三千多棵青楓和槭樹，11 到 12 月最紅！粉紅色的是櫻花。' },
+      quiz: { yaw: 82, pitch: 12, theme: '落葉與土壤', observe: '看看四周的楓樹和地上的土壤。',
+        q: '秋天楓葉掉在地上，對大自然最好的做法是？', o: ['全部燒掉', '留在地上變成養分', '掃進水庫'], a: 1,
+        ok: '答對了！想一想：落葉分解後會變成土壤的養分。學校的落葉可以怎麼利用？' } },
+    { id: 'dam', area: '石門地圖', name: '石門大壩・溢洪道', yaw: 172, pitch: -6, landmark: true,
+      story: { yaw: 70, pitch: 6, label: '景點故事', voice: 'story_dam', text: '你站在石門大壩壩頂！往北看，溢洪道的水往下沖進後池。真正的大壩高 133 公尺，是用石頭堆成的。' },
+      quiz: { yaw: 172, pitch: -16, theme: '防洪與水土保持', observe: '看看大壩北邊，水從哪裡沖下來。',
+        q: '下大雨水太多時，大壩用什麼把水安全地放出去？', o: ['溢洪道', '煙囪', '水管'], a: 0,
+        ok: '答對了！想一想：上游的山如果樹被砍光，下雨時泥沙會沖進水庫。保護水庫要從哪裡開始做起？' } }
+  ];
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var byId = {}; SCENES.forEach(function (s, i) { s.i = i; byId[s.id] = s; });
+  var cur = SCENES[0];
+
+  function faces(id) { return ['f', 'r', 'b', 'l', 'u', 'd'].map(function (k) { return 'assets/pano/' + id + '/' + k + '.jpg'; }); }
+  function storyDone(s) { return s.landmark ? P.has('landmarks', s.id) : false; }
+  function hotspot(s, kind) {
+    var h = s[kind];
+    return {
+      id: kind, pitch: h.pitch, yaw: h.yaw, cssClass: 'hs hs-' + kind + ((kind === 'quiz' ? P.has('walk', s.id) : storyDone(s)) ? ' done' : ''),
+      createTooltipFunc: function (div) {
+        div.innerHTML = '<span class="dot" role="button" tabindex="0" aria-label="' + (kind === 'quiz' ? '走讀挑戰' : '聽故事') + '">' + (kind === 'quiz' ? '❓' : '📖') + '</span><span class="lbl">' + esc(kind === 'quiz' ? '走讀挑戰' : h.label) + '</span>';
+        var dot = div.firstChild;
+        dot.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(kind); } });
+      },
+      clickHandlerFunc: function () { show(kind); }
+    };
+  }
+  var scenesCfg = {};
+  SCENES.forEach(function (s) {
+    var hs = [hotspot(s, 'story')]; if (s.quiz) hs.push(hotspot(s, 'quiz'));
+    scenesCfg[s.id] = { type: 'cubemap', cubeMap: faces(s.id), yaw: s.yaw, pitch: s.pitch, hfov: 100, hotSpots: hs };
+  });
+  var viewer = pannellum.viewer('pano', {
+    default: { firstScene: 'gate', sceneFadeDuration: 700, autoLoad: true, showFullscreenCtrl: true, compass: false, minHfov: 50, maxHfov: 120 },
+    scenes: scenesCfg
+  });
+  window.xianyuViewer = viewer;                        // 方便老師在主控台除錯
+  viewer.on('scenechange', function (id) { cur = byId[id]; hidePop(); drawSide(); });
+  viewer.on('mousedown', function () { $('hint').classList.add('off'); });
+  viewer.on('touchstart', function () { $('hint').classList.add('off'); });
+  setTimeout(function () { $('hint').classList.add('off'); }, 9000);
+
+  function refreshHotspots(s) {
+    // 完成後把標記換成打勾樣式：移除再加回去
+    try {
+      viewer.removeHotSpot('story', s.id); viewer.addHotSpot(hotspot(s, 'story'), s.id);
+      if (s.quiz) { viewer.removeHotSpot('quiz', s.id); viewer.addHotSpot(hotspot(s, 'quiz'), s.id); }
+    } catch (e) {}
+  }
+
+  // ── 故事／挑戰卡 ──
+  var lastVoice = null;
+  function pop(color, html) {
+    var el = $('pop');
+    el.style.setProperty('--pc', color); el.innerHTML = html; el.classList.add('show');
+    el.classList.remove('min');
+    var mn = document.createElement('button');
+    mn.type = 'button'; mn.className = 'mn'; mn.textContent = '👀 看畫面';
+    mn.onclick = function () { var m = el.classList.toggle('min'); mn.textContent = m ? '📋 展開' : '👀 看畫面'; };
+    var top = el.querySelector('.top'); if (top) top.insertBefore(mn, top.querySelector('.x'));
+    var x = el.querySelector('.x'); if (x) { x.onclick = hidePop; x.focus(); }
+    var r = el.querySelector('.rp'); if (r) r.onclick = function () { if (lastVoice) V.play(lastVoice); };
+  }
+  function hidePop() { $('pop').classList.remove('show'); V.stop(); }
+  function sayHtml(text) { return '<div class="say"><img src="assets/akai.jpg" alt="阿凱老師"><p>' + esc(text) + '</p></div>'; }
+  function show(kind) {
+    var s = cur;
+    if (kind === 'story') {
+      var h = s.story;
+      lastVoice = h.voice; V.play(h.voice);
+      var first = s.landmark && !P.has('landmarks', s.id);
+      if (s.landmark) P.mark('landmarks', s.id);
+      pop('var(--fish)', '<div class="top"><strong>📖 ' + esc(s.name) + '</strong><button class="x" type="button" aria-label="關閉">✕</button></div>' + sayHtml(h.text) +
+        '<div class="row"><button class="chip rp" type="button">🔁 再聽一次</button>' +
+        (s.quiz ? '<button class="chip" type="button" id="toQuiz">❓ 做走讀挑戰</button>' : nextBtn()) + '</div>' +
+        (first ? '<p class="obs">✔ 景點故事 +1（' + P.count('landmarks') + '/6）</p>' : ''));
+      var tq = $('toQuiz'); if (tq) tq.onclick = function () { show('quiz'); };
+      wireNext();
+      refreshHotspots(s);
+      return;
+    }
+    if (!s.quiz) return;
+    var q = s.quiz;
+    V.stop(); lastVoice = null;
+    pop('var(--water)', '<div class="top"><strong>❓ 走讀挑戰：' + esc(q.theme) + '</strong><button class="x" type="button" aria-label="關閉">✕</button></div>' +
+      '<p class="obs">👀 ' + esc(q.observe) + '</p><p class="q">' + esc(q.q) + '</p>' +
+      '<div class="opts">' + q.o.map(function (t, k) { return '<button class="opt" type="button" data-k="' + k + '"><b>' + 'ABC'[k] + '</b>' + esc(t) + '</button>'; }).join('') + '</div><div id="fb"></div>');
+    $('pop').querySelectorAll('.opt').forEach(function (b) {
+      b.onclick = function () {
+        if (+b.dataset.k !== q.a) { b.classList.add('wrong'); b.disabled = true; lastVoice = 'quiz_retry'; V.play('quiz_retry'); $('fb').innerHTML = '<p class="obs" style="color:#a33a2e">再想想看喔～轉動畫面仔細看一看！</p>'; return; }
+        $('pop').querySelectorAll('.opt').forEach(function (o) { o.disabled = true; });
+        b.classList.add('right');
+        var was = P.count('walk');
+        P.mark('walk', s.id);
+        var all = P.count('walk') >= 7 && was < 7;
+        lastVoice = all ? 'walkAll' : 'walk_' + s.id + '_ok'; V.play('walk_' + s.id + '_ok');
+        $('fb').innerHTML = '<div style="margin-top:10px">' + sayHtml(q.ok) + '</div>' +
+          (all ? '<div style="margin-top:8px">' + sayHtml('7 個走讀點全部完成！水的旅程：雨水落在山上 → 流進大漢溪 → 存在石門水庫 → 送到淨水場 → 從你家的水龍頭流出來。每一滴水都得來不易！') + '</div>' : '') +
+          '<div class="row"><button class="chip rp" type="button">🔁 再聽一次</button>' + nextBtn() + '</div>';
+        $('fb').querySelector('.rp').onclick = function () { V.play('walk_' + s.id + '_ok'); };
+        if (all) setTimeout(function () { V.play('walkAll'); }, 9500);
+        wireNext();
+        refreshHotspots(s);
+      };
+    });
+  }
+  function nextBtn() { return cur.i < SCENES.length - 1 ? '<button class="chip" type="button" data-next>下一站：' + esc(SCENES[cur.i + 1].name) + ' →</button>' : '<a class="chip" href="quest.html">🎯 去網頁闖關版</a>'; }
+  function wireNext() { var b = $('pop').querySelector('[data-next]'); if (b) b.onclick = function () { go(cur.i + 1); }; }
+  function go(i) { if (i < 0 || i >= SCENES.length) return; var s = SCENES[i]; viewer.loadScene(s.id, s.pitch, s.yaw, 100); }
+
+  // ── 側欄 ──
+  function drawSide() {
+    $('sceneName').textContent = cur.area + '・' + cur.name;
+    $('mLand').textContent = P.count('landmarks') + '/6';
+    $('mWalk').textContent = P.count('walk') + '/7';
+    $('mSt').textContent = P.count('stations') + '/4';
+    var code = P.code();
+    $('codeBox').innerHTML = code
+      ? '通關碼：<span class="code">' + code + '</span><br><a href="certificate.html?code=' + encodeURIComponent(code) + '">🖨 用最新成績印證書 →</a>'
+      : '先完成 <a href="quest.html">網頁闖關版</a> 的 4 站問答，就會拿到通關碼；這裡的景點和走讀成績也會一起算進去。';
+    $('doQuiz').disabled = !cur.quiz; $('doQuiz').style.opacity = cur.quiz ? 1 : .45;
+    var area = '';
+    $('list').innerHTML = SCENES.map(function (s) {
+      var head = s.area !== area ? '<li class="area">' + (area = s.area) + '</li>' : '';
+      var st = [];
+      if (s.landmark) st.push(P.has('landmarks', s.id) ? '📖✔' : '📖');
+      if (s.quiz) st.push(P.has('walk', s.id) ? '❓✔' : '❓');
+      return head + '<li><button class="sc" type="button" data-i="' + s.i + '"' + (s === cur ? ' aria-current="true"' : '') + '>' +
+        '<img src="assets/pano/' + s.id + '/thumb.jpg" alt="" loading="lazy"><span><strong>' + (s.i + 1) + '. ' + esc(s.name) + '</strong><small>' + st.join('　') + '</small></span></button></li>';
+    }).join('');
+    $('prev').disabled = cur.i === 0; $('next').disabled = cur.i === SCENES.length - 1;
+    var m = V.muted(); $('mute').setAttribute('aria-pressed', String(!m)); $('mute').textContent = m ? '🔇 語音關著' : '🔊 語音開著';
+  }
+  $('list').addEventListener('click', function (e) { var b = e.target.closest('.sc'); if (b) { go(+b.dataset.i); if (innerWidth < 1100) $('pano').scrollIntoView({ behavior: 'smooth', block: 'center' }); } });
+  $('prev').onclick = function () { go(cur.i - 1); };
+  $('next').onclick = function () { go(cur.i + 1); };
+  $('doStory').onclick = function () { show('story'); };
+  $('doQuiz').onclick = function () { show('quiz'); };
+  $('mute').onclick = function () { V.toggle(); drawSide(); };
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hidePop(); });
+  P.on(drawSide);
+  drawSide();
+})();
+</script>
+</body>
+</html>

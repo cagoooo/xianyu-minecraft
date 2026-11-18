@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1.2.0">
+<link rel="stylesheet" href="style.css?v=1.3.0">
 <style>
   .cert-page { display: grid; grid-template-columns: minmax(300px, 420px) 1fr; gap: 32px; align-items: start; padding-top: 32px; padding-bottom: 48px; }
   .cert-form { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; position: sticky; top: 84px; }
@@ -69,6 +69,7 @@
       <a href="index.html#download">下載與匯入</a>
       <a href="sheets.html">學習單</a>
       <a href="lesson.html">教案與教師手冊</a>
+      <a href="quest.html">網頁闖關版</a>
     </nav>
   </div>
 </header>
@@ -94,6 +95,7 @@
         <li>打開背包，把游標移到「鱻魚學園通關證書」上，最下面一行就是通關碼。</li>
         <li>或跟阿凱老師說話，按「我的進度」，聊天框也會出現通關碼。</li>
         <li>繼續完成走讀、生活任務後再按一次「我的進度」，通關碼會更新成最新成績。</li>
+        <li>玩<a href="quest.html">網頁闖關版</a>的同學：4 站過關後，畫面上就會出現通關碼。</li>
       </ol>
       <p style="margin:10px 0 0">通關碼只在你的瀏覽器裡計算，不會傳到任何地方。</p>
     </div>
@@ -130,6 +132,12 @@
     let n = 0n; for (const x of d.slice(0, 6)) n = n * 32n + BigInt(x);
     if (n >= M) return null;
     n = (((n - B) % M + M) % M) * inv % M;
+    // 112,000,000 以上 = 網頁闖關版的碼（4 站已過關；只記景點數×8＋走讀數）
+    if (n >= 112000000n) {
+      const r = n - 112000000n;
+      if (r >= 56n) return null;
+      return { stations: 4, landmarks: Number(r / 8n), walk: Number(r % 8n), recycle: 0, power: 0, eco: 0, walk100m: 0, solar: 0, ac: 0, web: true };
+    }
     const out = {};
     for (const [k, r] of [...FIELDS].reverse()) { out[k] = Number(n % BigInt(r)); n /= BigInt(r); }
     return n === 0n ? out : null;
@@ -145,19 +153,20 @@
     $('cert').innerHTML = `
       <div class="top"><img src="assets/school-logo.png" alt="石門國小校徽"><span class="school">桃園市龍潭區石門國民小學</span></div>
       <h2>通關證書</h2>
-      <p class="sub2">Minecraft 教育版・鱻魚特色學園</p>
+      <p class="sub2">${v.web ? '鱻魚特色學園・網頁闖關版' : 'Minecraft 教育版・鱻魚特色學園'}</p>
       <p class="name"><b>${blank($('grade').value)}</b> 年 <b>${blank($('cls').value)}</b> 班 <b>${blank($('seat').value)}</b> 號</p>
-      <p class="lead2">在「鱻魚特色學園」課程世界中，完成了以下挑戰：</p>
+      <p class="lead2">${v.web ? '在「鱻魚特色學園」網頁闖關版與 360° 虛擬導覽中，完成了以下挑戰：' : '在「鱻魚特色學園」課程世界中，完成了以下挑戰：'}</p>
       <table>
         <tr><td>鱻魚學園 4 站闖關</td><td>${v.stations} / 4 站</td></tr>
-        <tr><td>石門地圖景點打卡</td><td>${v.landmarks} / 6 個</td></tr>
+        <tr><td>石門地圖景點${v.web ? '導覽' : '打卡'}</td><td>${v.landmarks} / 6 個</td></tr>
         <tr><td>環境教育走讀</td><td>${v.walk} / 7 站</td></tr>
+        ${v.web ? '' : `
         <tr><td>垃圾分類</td><td>${v.recycle >= 99 ? '99 件以上' : v.recycle + ' 件'}</td></tr>
         <tr><td>隨手關燈</td><td>${mark(v.power)}</td></tr>
         <tr><td>冷氣調到 26～28 度</td><td>${mark(v.ac)}</td></tr>
         <tr><td>太陽能小站</td><td>${mark(v.solar)}</td></tr>
         <tr><td>生態觀察家</td><td>${v.eco} / 4 種生物</td></tr>
-        <tr><td>綠色交通（步行）</td><td>約 ${(v.walk100m * 100).toLocaleString()} 公尺</td></tr>
+        <tr><td>綠色交通（步行）</td><td>約 ${(v.walk100m * 100).toLocaleString()} 公尺</td></tr>`}
       </table>
       <div class="foot">
         <div><div>${roc}</div><div class="code">通關碼 ${esc(code)}</div></div>
@@ -178,6 +187,9 @@
     if (innerWidth < 900) $('cert').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
   $('print').addEventListener('click', () => window.print());
+  // 從網頁闖關版按「印證書」過來時，網址會帶 ?code=，直接幫忙填好並產生
+  const qc = new URLSearchParams(location.search).get('code');
+  if (qc) { $('code').value = qc.toUpperCase().slice(0, 9); $('form').requestSubmit ? $('form').requestSubmit() : $('form').dispatchEvent(new Event('submit')); }
 </script>
 </body>
 </html>

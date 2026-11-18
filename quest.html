@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>網頁闖關版｜鱻魚特色學園</title>
+<meta name="description" content="不用安裝 Minecraft 也能玩：鱻魚特色學園 4 站問答闖關，阿凱老師語音帶你認識「鱻」字、魚的身體、石門水庫和愛護水資源，過關拿通關碼印證書。手機、平板、Chromebook 都能玩。">
+<meta property="og:title" content="鱻魚特色學園｜網頁闖關版">
+<meta property="og:description" content="4 站問答闖關、阿凱老師語音、通關證書。手機、平板、Chromebook 都能玩。">
+<meta property="og:image" content="https://cagoooo.github.io/xianyu-minecraft/assets/quest/cover.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=1.3.0">
+<style>
+  .q-hero { padding: 36px 0 18px; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 36px; align-items: center; }
+  .q-hero h1 { font-size: clamp(2rem, 4vw, 3.1rem); line-height: 1.2; margin: 12px 0 10px; }
+  .q-hero h1 .fishword { color: var(--fish); }
+  .q-hero p.lead { font-size: var(--fs-md); color: var(--ink-soft); margin: 0 0 16px; }
+  .panel { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 22px; }
+  .stamps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 10px 0 14px; }
+  .stamp { aspect-ratio: 1; min-height: 0; min-width: 0; overflow: hidden; border-radius: 50%; border: 3px dashed #d5ccb8; display: grid; place-items: center; text-align: center; font-weight: 900; font-size: var(--fs-sm); color: #b3a98f; line-height: 1.25; padding: 6px; }
+  .stamp.done { border: 4px solid var(--c); color: var(--c); background: #fff; transform: rotate(-8deg); box-shadow: 0 3px 0 rgba(0,0,0,.06); }
+  .stamp.done::before { content: "✔"; display: block; font-size: 1.6em; }
+  .tools-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; border: 2px solid var(--line); background: #fff; border-radius: 999px; padding: 6px 14px; font: inherit; font-size: var(--fs-sm); font-weight: 700; cursor: pointer; color: var(--ink); min-height: 40px; }
+  .chip[aria-pressed="true"] { border-color: var(--water); background: #e3f1fb; color: var(--water-deep); }
+  .chip:focus-visible, .opt:focus-visible, .st-card:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+  .lv-group { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { white-space: nowrap; }
+
+  .st-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; padding-bottom: 12px; }
+  .st-card { text-align: left; font: inherit; color: inherit; cursor: pointer; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; padding: 0; display: flex; flex-direction: column; border-top: 8px solid var(--c); transition: transform .15s, box-shadow .15s; }
+  .st-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(29,36,51,.12); }
+  .st-card img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+  .st-card .bd { padding: 14px 16px 18px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .st-card h3 { margin: 0; font-size: var(--fs-lg); }
+  .st-card p { margin: 0; color: var(--ink-soft); font-size: var(--fs-sm); }
+  .st-card .go { margin-top: auto; padding-top: 10px; font-weight: 900; color: var(--c); }
+  .st-card.done .go::after { content: "　✔ 已過關（可以再玩一次）"; color: #2f7d32; font-weight: 700; font-size: var(--fs-sm); }
+
+  .finish { display: none; margin: 18px 0 8px; border: 3px solid var(--sun); background: #fffaf0; border-radius: var(--radius); padding: 22px; }
+  .finish.show { display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: center; }
+  .finish h2 { margin: 0 0 6px; font-size: clamp(1.4rem, 2.4vw, 2rem); }
+  .finish .code { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 900; letter-spacing: .14em; color: #8a5a12; background: #fff; border: 2px dashed #e0c98f; border-radius: 12px; padding: 6px 18px; display: inline-block; margin: 6px 0; }
+  .finish .cta { display: flex; flex-direction: column; gap: 10px; }
+
+  /* 闖關視窗 */
+  dialog.st { width: min(1180px, 96vw); max-height: 94vh; border: 0; border-radius: 18px; padding: 0; background: var(--bg); color: var(--ink); box-shadow: 0 30px 80px rgba(0,0,0,.35); }
+  dialog.st::backdrop { background: rgba(20, 28, 40, .62); }
+  .st-head { display: flex; align-items: center; gap: 12px; padding: 12px 18px; background: var(--c); color: #fff; }
+  .st-head h2 { margin: 0; font-size: var(--fs-lg); flex: 1; }
+  .st-head button { background: rgba(255,255,255,.2); color: #fff; border: 0; border-radius: 10px; min-width: 44px; min-height: 44px; font: inherit; font-weight: 700; cursor: pointer; padding: 0 12px; }
+  .st-body { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; padding: 20px; overflow-y: auto; max-height: calc(94vh - 68px); }
+  .st-body img.scene { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; border: 3px solid #fff; box-shadow: 0 6px 18px rgba(0,0,0,.12); }
+  .npc { display: flex; gap: 12px; align-items: flex-start; margin-top: 14px; }
+  .npc img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,.15); flex: none; }
+  .bubble { position: relative; background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 12px 16px; font-size: var(--fs-md); flex: 1; white-space: pre-line; }
+  .bubble::before { content: ""; position: absolute; left: -10px; top: 20px; border: 8px solid transparent; border-right-color: var(--line); border-left: 0; }
+  .bubble .who { display: block; font-size: var(--fs-xs); font-weight: 900; color: var(--c); margin-bottom: 2px; }
+  .replay { margin-top: 8px; }
+  .qbox h3 { margin: 0 0 4px; font-size: var(--fs-sm); color: var(--ink-soft); }
+  .qbox .q { font-size: clamp(1.25rem, 2.2vw, 1.6rem); font-weight: 900; margin: 0 0 14px; line-height: 1.5; }
+  .opts { display: grid; gap: 12px; }
+  .opt { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; font: inherit; font-size: var(--fs-md); font-weight: 700; padding: 14px 16px; min-height: 60px; border-radius: 14px; border: 3px solid var(--line); background: #fff; cursor: pointer; color: var(--ink); }
+  .opt b { flex: none; width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; color: #fff; background: var(--ink-soft); font-size: 1.1em; }
+  .opt:hover:not(:disabled) { border-color: var(--c); }
+  .opt.wrong { border-color: #e0a29a; background: #fdf0ee; color: #a0a0a0; animation: shake .35s; }
+  .opt.wrong b { background: #d9a49c; }
+  .opt.right { border-color: #2f7d32; background: #eaf6e8; }
+  .opt.right b { background: #2f7d32; }
+  .opt:disabled { cursor: default; }
+  @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+  .qnav { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; align-items: center; }
+  .qdots { display: flex; gap: 6px; margin-left: auto; }
+  .qdots i { width: 12px; height: 12px; border-radius: 50%; background: #d8cfbb; }
+  .qdots i.on { background: var(--c); }
+  .mc-task { margin-top: 14px; background: #eef6ec; border: 1px solid #cfe3c9; border-radius: 12px; padding: 12px 16px; font-size: var(--fs-sm); white-space: pre-line; }
+  .clear-badge { font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; color: var(--c); margin: 4px 0 6px; }
+  @media (prefers-reduced-motion: reduce) { .opt.wrong { animation: none; } .st-card { transition: none; } }
+
+  @media (max-width: 1100px) { .st-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 900px) {
+    .q-hero { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+    .st-body { grid-template-columns: 1fr; }
+    .finish.show { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .st-grid { grid-template-columns: 1fr; }
+    dialog.st { width: 100vw; max-width: 100vw; max-height: 100dvh; height: 100dvh; border-radius: 0; margin: 0; }
+    .st-body { max-height: calc(100dvh - 68px); padding: 14px 16px 24px; }
+    .stamp { font-size: .78rem; border-width: 2px; padding: 2px; }
+    .stamp.done { border-width: 3px; }
+    .stamp.done::before { font-size: 1.2em; }
+    .chip { flex: 1 1 auto; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="assets/icon.svg" alt="">鱻魚特色學園</a>
+    <nav class="topnav" aria-label="頁面導覽">
+      <a href="quest.html" aria-current="page">網頁闖關版</a>
+      <a href="tour.html">360° 虛擬導覽</a>
+      <a href="certificate.html">印證書</a>
+      <a href="index.html">課程首頁</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="q-hero">
+    <div>
+      <span class="eyebrow">🌐 不用安裝 Minecraft・手機平板都能玩</span>
+      <h1><span class="fishword">鱻</span>魚學園<br>網頁闖關版</h1>
+      <p class="lead">跟著阿凱老師闖 4 個問答站：認識「鱻」字、魚的身體、石門水庫，學會愛護水資源。4 站都過關，就能拿到<strong>通關碼</strong>印證書！</p>
+      <div class="tools-row" role="group" aria-label="設定">
+        <span class="lv-group" role="group" aria-label="難度">
+          <button class="chip" type="button" data-lv="mid">📗 中年級：每站 3 題</button>
+          <button class="chip" type="button" data-lv="low">📒 低年級：每站 1 題</button>
+        </span>
+        <button class="chip" type="button" id="mute" aria-pressed="false">🔊 語音開著</button>
+      </div>
+    </div>
+    <div class="panel" aria-live="polite">
+      <strong>我的闖關進度</strong>
+      <div class="stamps" id="stamps"></div>
+      <div class="tools-row">
+        <a class="btn btn-ghost" href="tour.html">🧭 下一關：360° 虛擬導覽</a>
+        <button class="chip" type="button" id="reset">↺ 重新開始</button>
+      </div>
+      <p style="margin:10px 0 0;font-size:var(--fs-xs);color:var(--ink-soft)">進度只存在這台裝置的瀏覽器裡，不會傳到任何地方。換電腦或清除瀏覽紀錄就會從頭開始。</p>
+    </div>
+  </section>
+
+  <div class="finish" id="finish" role="status">
+    <div>
+      <h2>🏅 4 站全部過關！你就是愛水小尖兵！</h2>
+      <p style="margin:0">你的通關碼：</p>
+      <span class="code" id="code">—</span>
+      <p style="margin:6px 0 0;color:var(--ink-soft);font-size:var(--fs-sm)">把通關碼抄在學習單上，或直接按右邊的按鈕印證書。再去「360° 虛擬導覽」完成景點和走讀，通關碼會更新成最新成績。</p>
+    </div>
+    <div class="cta">
+      <a class="btn btn-main" id="certLink" href="certificate.html">🖨 印我的通關證書</a>
+      <a class="btn btn-ghost" href="tour.html">🧭 去 360° 虛擬導覽</a>
+    </div>
+  </div>
+
+  <h2 style="margin:22px 0 4px;font-size:clamp(1.4rem,2.4vw,2rem)">選一站開始闖關</h2>
+  <p style="margin:0 0 18px;color:var(--ink-soft)">建議照 ①→④ 的順序走，跟遊戲裡沿著步道走一樣；也可以先挑喜歡的。</p>
+  <div class="st-grid" id="grid"></div>
+  <p class="note">🎮 學校電腦教室有裝 Minecraft 教育版的話，可以進遊戲裡的「鱻魚特色學園」，跟真的 NPC 對話、自己走到每一站。網頁版的題目和遊戲裡一樣，適合在家複習或用平板上課。</p>
+</main>
+
+<dialog class="st" id="dlg" aria-labelledby="dlgTitle">
+  <div class="st-head">
+    <h2 id="dlgTitle">站名</h2>
+    <button type="button" id="dlgMute" aria-label="語音開關">🔊</button>
+    <button type="button" id="dlgClose">✕ 回地圖</button>
+  </div>
+  <div class="st-body">
+    <div>
+      <img class="scene" id="dlgImg" src="" alt="">
+      <div class="npc">
+        <img src="assets/akai.jpg" alt="阿凱老師">
+        <div class="bubble" id="bubble" aria-live="polite"></div>
+      </div>
+      <button class="chip replay" type="button" id="replay">🔁 再聽一次</button>
+    </div>
+    <div class="qbox" id="qbox"></div>
+  </div>
+</dialog>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src="assets/icon.svg" alt="" width="48" height="48">
+      <div><strong>鱻魚特色學園</strong><span>石門國小的 Minecraft 教育版課程世界，網頁版讓沒裝遊戲的裝置也能一起學。</span></div>
+    </div>
+    <ul class="footer-points">
+      <li><span class="fp-icon">🎧</span><div><strong>阿凱老師語音</strong><small>每一題都有語音，低年級也聽得懂</small></div></li>
+      <li><span class="fp-icon">📱</span><div><strong>不用安裝</strong><small>手機、iPad、Chromebook 打開瀏覽器就能玩</small></div></li>
+      <li><span class="fp-icon">🔒</span><div><strong>不蒐集資料</strong><small>不用登入，進度只存在自己的裝置</small></div></li>
+    </ul>
+    <nav class="footer-links" aria-label="快速連結">
+      <a href="tour.html">🧭 360° 虛擬導覽</a>
+      <a href="certificate.html">🏅 印通關證書</a>
+      <a href="sheets.html">🖨 學習單</a>
+      <a href="index.html">🏠 課程首頁</a>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    <p class="site-credit">Made with <span class="site-credit__heart" aria-label="愛心">❤️</span> by
+      <a href="https://cagoooo.github.io/Akai/" target="_blank" rel="noopener noreferrer" class="site-credit__author">阿凱老師</a>
+      <span class="footer-school"><span class="footer-dot" aria-hidden="true">・</span>桃園市龍潭區石門國民小學</span></p>
+    <p class="version-tag">v1.3.0・2026-11-18</p>
+  </div>
+  <p class="legal">畫面是 Minecraft 教育版「鱻魚特色學園」課程世界的遊戲截圖。阿凱老師的旁白以 Fish Audio 聲音模型生成，聲音為阿凱老師本人授權。Minecraft 是 Mojang Synergies AB 的商標；本網站為學校教學用途，與 Mojang、Microsoft 沒有關聯。</p>
+</footer>
+
+<script src="assets/js/xianyu-web.js?v=1.3.0"></script>
+<script>
+(function () {
+  'use strict';
+  var P = window.XianyuProgress, V = window.XianyuVoice;
+  // 題目與台詞和遊戲（題目設計_鱻魚學園.md、data/voice_lines.json）一致
+  var ST = [
+    { id: 's1', c: '#d9483b', name: '①紅站・鱻字博士', subj: '語文', img: 'assets/quest/s1.jpg', alt: '鱻字廣場上三條魚的雕塑',
+      intro: '歡迎來到鱻魚特色學園！\n我們學校的「鱻」字，是三條魚疊在一起喔～\n你認識這個字嗎？',
+      qs: [
+        { q: '「鱻」是哪一個字的異體字？', o: ['鯨', '鮮', '魯'], a: 1, ok: '答對了！鱻是「鮮」的異體字，\n鮮就是「新鮮」的鮮。' },
+        { q: '「鱻」的部首是什麼？', o: ['魚', '水', '火'], a: 0, ok: '沒錯！三條魚都是魚，\n部首當然是「魚」。' },
+        { q: '「鱻」一共有幾畫？', o: ['11 畫', '22 畫', '33 畫'], a: 2, ok: '好厲害！一個「魚」11 畫，\n三個魚就是 11 × 3 = 33 畫。' } ],
+      after: 'after1', afterText: '太棒了！第一關過關～\n接下來去②黃站找生態觀察員！',
+      task: '走到中央廣場的「鱻」字雕塑，數一數有幾條魚？牠們排成什麼形狀？（看看上面的照片也可以找到答案喔）' },
+    { id: 's2', c: '#d9a514', name: '②黃站・生態觀察員', subj: '自然', img: 'assets/quest/s2.jpg', alt: '鱻魚學園的生態池',
+      intro: '往西邊走，就會看到生態池！\n先回答我的問題，\n再去仔細看看水裡的魚兒吧～',
+      qs: [
+        { q: '魚在水中用什麼呼吸？', o: ['肺', '鰓', '皮膚'], a: 1, ok: '答對了！魚用鰓把水裡的氧氣\n吸進身體。' },
+        { q: '魚身上的「鰭」主要幫助魚做什麼？', o: ['游泳和保持平衡', '吃東西', '看東西'], a: 0, ok: '沒錯！鰭就像魚的槳和舵，\n幫助牠前進、轉彎、保持平衡。' },
+        { q: '魚身體兩側的「側線」可以感覺什麼？', o: ['光線的顏色', '水流和水壓的變化', '食物的味道'], a: 1, ok: '好厲害！側線能感覺水流，\n幫助魚躲敵人、找食物、成群游泳。' } ],
+      after: 'after2', afterText: '好厲害！你已經認識魚的身體了～\n下一站是③綠站，聽聽石門水庫的故事！',
+      task: '到西邊的生態池找一找，池子裡有哪幾種魚？把看到的魚圈在學習單上！' },
+    { id: 's3', c: '#3f8f3a', name: '③綠站・水庫導覽員', subj: '社會', img: 'assets/quest/s3.jpg', alt: '從石門大壩壩頂看溢洪道',
+      intro: '我們龍潭有一座很重要的水庫，\n桃園很多人喝的水都跟它有關係。\n你知道它的故事嗎？',
+      qs: [
+        { q: '石門水庫建在哪一條溪上？', o: ['大漢溪', '頭前溪', '濁水溪'], a: 0, ok: '答對了！石門水庫在大漢溪的中游，\n橫跨龍潭和大溪。' },
+        { q: '石門水庫在民國幾年完工？', o: ['民國 53 年', '民國 83 年', '民國 103 年'], a: 0, ok: '沒錯！民國 53 年（西元 1964 年）就完工，\n已經 60 多歲了！' },
+        { q: '下面哪一項「不是」石門水庫的功能？', o: ['灌溉農田', '提供自來水', '生產石油'], a: 2, ok: '好厲害！水庫可以灌溉、供水、發電、防洪，\n但不會生產石油喔。' } ],
+      after: 'after3', afterText: '水庫小達人誕生！\n最後一站是④藍站，加油！',
+      task: '用教育版的「相機」拍下你最喜歡的一棟建築，放進「作品集」，寫一句話說明為什麼喜歡它！' },
+    { id: 's4', c: '#2d72c4', name: '④藍站・愛水小隊長', subj: '環境教育', img: 'assets/quest/s4.jpg', alt: '三坑自然生態公園的生態湖',
+      intro: '最後一站！\n魚兒和水都需要大家一起保護。\n你準備好當「愛水小尖兵」了嗎？',
+      qs: [
+        { q: '看到池塘裡有垃圾，應該怎麼做？', o: ['撿起來丟進垃圾桶', '再丟更多進去', '假裝沒看到'], a: 0, ok: '答對了！乾淨的水，\n魚兒才能健康長大。' },
+        { q: '家裡養的魚不想養了，可以怎麼辦？', o: ['倒進附近的溪流', '送給願意照顧的人，或請教寵物店', '丟進水庫'], a: 1, ok: '沒錯！隨便放到野外，\n牠可能跟本土的魚搶食物、破壞生態。' },
+        { q: '哪一種做法可以節約用水？', o: ['刷牙時關水龍頭', '一直開著水龍頭', '用水管沖地板'], a: 0, ok: '好厲害！省下的每一滴水，\n都是水庫辛苦存下來的。' } ],
+      after: null, afterText: '4 站全部完成！你就是愛水小尖兵！',
+      task: '在藍站旁的草地上，用方塊蓋一個「愛水小作品」（一條魚、一個水滴或口號），完成後請老師來看！' }
+  ];
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var ABCD = ['A', 'B', 'C'];
+
+  function drawHub() {
+    $('stamps').innerHTML = ST.map(function (s) {
+      var d = P.has('stations', s.id);
+      return '<div class="stamp' + (d ? ' done' : '') + '" style="--c:' + s.c + '">' + esc(s.name.split('・')[0]) + '<br>' + (d ? '過關' : '未完成') + '</div>';
+    }).join('');
+    $('grid').innerHTML = ST.map(function (s, i) {
+      return '<button type="button" class="st-card' + (P.has('stations', s.id) ? ' done' : '') + '" style="--c:' + s.c + '" data-i="' + i + '">' +
+        '<img src="' + s.img + '" alt="' + esc(s.alt) + '" loading="lazy" width="960" height="540">' +
+        '<span class="bd"><span class="tag">' + s.subj + '</span><h3>' + esc(s.name) + '</h3><p>' + (P.get().level === 'low' ? '1' : '3') + ' 題問答＋1 個小任務</p><span class="go">開始闖關 →</span></span></button>';
+    }).join('');
+    var code = P.code();
+    $('finish').classList.toggle('show', !!code);
+    if (code) { $('code').textContent = code; $('certLink').href = 'certificate.html?code=' + encodeURIComponent(code); }
+    document.querySelectorAll('[data-lv]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.lv === P.get().level)); });
+    var m = V.muted();
+    $('mute').setAttribute('aria-pressed', String(!m)); $('mute').textContent = m ? '🔇 語音關著' : '🔊 語音開著';
+    $('dlgMute').textContent = m ? '🔇' : '🔊';
+  }
+
+  // ── 闖關視窗 ──
+  var cur = null, qi = 0, lastVoice = null;
+  function say(text, voiceId) {
+    $('bubble').innerHTML = '<span class="who">阿凱老師</span>' + esc(text);
+    lastVoice = voiceId; V.play(voiceId);
+  }
+  function qsFor(s) { return P.get().level === 'low' ? s.qs.slice(0, 1) : s.qs; }
+  function dots(n, at) { var h = '<span class="qdots" aria-hidden="true">'; for (var i = 0; i < n; i++) h += '<i class="' + (i <= at ? 'on' : '') + '"></i>'; return h + '</span>'; }
+  function open(i) {
+    cur = ST[i]; qi = 0;
+    var dlg = $('dlg');
+    dlg.style.setProperty('--c', cur.c);
+    $('dlgTitle').textContent = cur.name + '（' + cur.subj + '）';
+    $('dlgImg').src = cur.img; $('dlgImg').alt = cur.alt;
+    say(cur.intro, 'quiz_' + cur.id + '_intro');
+    $('qbox').innerHTML = '<h3>' + esc(cur.name) + '</h3><p class="q">先聽阿凱老師說，準備好就開始答題！</p>' +
+      '<div class="qnav"><button class="btn btn-main" type="button" id="startQ">開始答題 →</button>' + dots(qsFor(cur).length, -1) + '</div>';
+    $('startQ').onclick = showQ;
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+    $('startQ').focus();
+  }
+  function showQ() {
+    var list = qsFor(cur), q = list[qi];
+    say('第 ' + (qi + 1) + ' 題：' + q.q, 'quiz_' + cur.id + '_q' + (qi + 1));
+    $('qbox').innerHTML = '<h3>第 ' + (qi + 1) + ' 題 / 共 ' + list.length + ' 題</h3><p class="q">' + esc(q.q) + '</p>' +
+      '<div class="opts">' + q.o.map(function (t, k) { return '<button class="opt" type="button" data-k="' + k + '"><b>' + ABCD[k] + '</b><span>' + esc(t) + '</span></button>'; }).join('') + '</div>' +
+      '<div class="qnav" id="qnav">' + dots(list.length, qi) + '</div>';
+    $('qbox').querySelectorAll('.opt').forEach(function (b) { b.onclick = function () { pick(b, q); }; });
+    var first = $('qbox').querySelector('.opt'); if (first) first.focus();
+  }
+  function pick(btn, q) {
+    var k = +btn.dataset.k;
+    if (k !== q.a) {
+      btn.classList.add('wrong'); btn.disabled = true;
+      say('再想想看喔～仔細讀一次題目，你一定可以的！', 'quiz_retry');
+      return;
+    }
+    $('qbox').querySelectorAll('.opt').forEach(function (b) { b.disabled = true; });
+    btn.classList.add('right');
+    say(q.ok, 'quiz_' + cur.id + '_ok' + (qi + 1));
+    var last = qi === qsFor(cur).length - 1;
+    var nb = document.createElement('button');
+    nb.className = 'btn btn-main'; nb.type = 'button';
+    nb.textContent = last ? '過關！看結果 →' : '下一題 →';
+    nb.onclick = function () { if (last) clear(); else { qi++; showQ(); } };
+    $('qnav').insertBefore(nb, $('qnav').firstChild);
+    nb.focus();
+  }
+  function clear() {
+    P.mark('stations', cur.id);
+    say(cur.afterText, cur.after);
+    var all = P.count('stations') >= 4;
+    $('qbox').innerHTML = '<p class="clear-badge">🎉 過關！</p><p class="q">' + esc(cur.name) + ' 完成</p>' +
+      '<div class="mc-task">🎮 <strong>在 Minecraft 世界裡還有一個任務：</strong>\n' + esc(cur.task) + '</div>' +
+      '<div class="qnav"><button class="btn btn-main" type="button" id="back">' + (all ? '🏅 看我的通關碼' : '回地圖，選下一站 →') + '</button></div>';
+    $('back').onclick = function () { close(); if (all) $('finish').scrollIntoView({ behavior: 'smooth', block: 'center' }); };
+    $('back').focus();
+  }
+  function close() { V.stop(); var d = $('dlg'); if (d.close) d.close(); else d.removeAttribute('open'); drawHub(); }
+
+  $('grid').addEventListener('click', function (e) { var c = e.target.closest('.st-card'); if (c) open(+c.dataset.i); });
+  $('dlgClose').onclick = close;
+  $('dlg').addEventListener('cancel', function () { V.stop(); setTimeout(drawHub, 0); });
+  $('replay').onclick = function () { if (lastVoice) V.play(lastVoice); };
+  function toggleMute() { V.toggle(); drawHub(); }
+  $('mute').onclick = toggleMute; $('dlgMute').onclick = toggleMute;
+  document.querySelectorAll('[data-lv]').forEach(function (b) { b.onclick = function () { P.setLevel(b.dataset.lv); drawHub(); }; });
+  $('reset').onclick = function () { if (confirm('要清除這台裝置上的闖關、景點和走讀進度，從頭開始嗎？')) P.reset(); };
+  P.on(drawHub);
+  drawHub();
+})();
+</script>
+</body>
+</html>

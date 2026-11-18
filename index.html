@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1.2.1">
+<link rel="stylesheet" href="style.css?v=1.3.0">
 </head>
 <body>
 
@@ -25,6 +25,7 @@
   <div class="wrap">
     <a class="brand" href="#top"><img src="assets/icon.svg" alt="">鱻魚特色學園</a>
     <nav class="topnav" aria-label="頁面導覽">
+      <a href="#web">網頁版</a>
       <a href="#world">世界裡有什麼</a>
       <a href="#lessons">3 節課流程</a>
       <a href="#download">下載與匯入</a>
@@ -48,8 +49,9 @@
           <a class="btn btn-main" href="downloads/xianyu-academy-student.mcworld" download="鱻魚特色學園_學生版.mcworld">⬇ 下載學生版世界檔</a>
           <a class="btn btn-ghost" href="sheets.html">🖨 列印學習單</a>
           <a class="btn btn-ghost" href="certificate.html">🏅 印通關證書</a>
+          <a class="btn btn-ghost" href="#web">🌐 沒裝遊戲？玩網頁版</a>
         </div>
-        <small>需要 Minecraft 教育版（學校帳號登入）・建議中年級・約 3 節課</small>
+        <small>需要 Minecraft 教育版（學校帳號登入）・建議中年級・約 3 節課・沒裝遊戲也能玩 <a href="#web">網頁版</a></small>
       </div>
       <figure class="shot" style="margin:0">
         <img src="assets/hero.jpg" alt="鱻魚特色學園：三條魚組成的鱻字雕塑、校舍屋頂南面的太陽能板、蝴蝶花園" width="1100" height="600">
@@ -64,6 +66,23 @@
         <li><b>6</b><span>減碳生活任務</span></li>
         <li><b>20</b><span>位不同造型 NPC</span></li>
       </ul>
+    </div>
+  </section>
+
+  <section class="block" id="web">
+    <div class="wrap">
+      <h2>沒裝 Minecraft 也能玩：網頁版</h2>
+      <p class="sub">手機、iPad、Chromebook 打開瀏覽器就能玩，不用登入。題目、語音和遊戲裡一樣，適合在家複習、用平板上課，或先讓學生認識世界。</p>
+      <div class="web-cards">
+        <a class="web-card" href="quest.html" style="--c:var(--fish)">
+          <img src="assets/quest/s1.jpg" alt="鱻字廣場上三條魚的雕塑" loading="lazy" width="960" height="540">
+          <span class="bd"><span class="tag">A・網頁闖關版</span><strong>4 站問答闖關</strong><span>認識「鱻」字、魚的身體、石門水庫、愛護水資源；12 題都有阿凱老師語音，低年級可切換成每站 1 題。過關拿通關碼印證書。</span><span class="go">開始闖關 →</span></span>
+        </a>
+        <a class="web-card" href="tour.html" style="--c:var(--water)">
+          <img src="assets/quest/s3.jpg" alt="從石門大壩壩頂看溢洪道" loading="lazy" width="960" height="540">
+          <span class="bd"><span class="tag">B・360° 虛擬導覽</span><strong>從學園走到石門大壩</strong><span>9 個在遊戲裡拍的 360° 環景：學園大門、鱻字廣場、生態池和石門 6 個景點。點 📖 聽景點故事，點 ❓ 轉動畫面找答案，完成 7 個走讀挑戰。</span><span class="go">開始導覽 →</span></span>
+        </a>
+      </div>
     </div>
   </section>
 
@@ -320,6 +339,8 @@
       <a href="sheets.html">🖨 學習單</a>
       <a href="lesson.html">📘 教案與教師手冊</a>
       <a href="certificate.html">🏅 印通關證書</a>
+      <a href="quest.html">🎯 網頁闖關版</a>
+      <a href="tour.html">🧭 360° 虛擬導覽</a>
       <a href="#lessons">📅 3 節課流程</a>
       <a href="#teacher">🧑‍🏫 老師專區</a>
     </nav>
@@ -328,7 +349,7 @@
     <p class="site-credit">Made with <span class="site-credit__heart" aria-label="愛心">❤️</span> by
       <a href="https://cagoooo.github.io/Akai/" target="_blank" rel="noopener noreferrer" class="site-credit__author">阿凱老師</a>
       <span class="footer-school"><span class="footer-dot" aria-hidden="true">・</span>桃園市龍潭區石門國民小學</span></p>
-    <p class="version-tag">v1.2.2・2026-11-17</p>
+    <p class="version-tag">v1.3.0・2026-11-18</p>
   </div>
   <p class="legal">地圖資料 © OpenStreetMap 貢獻者（ODbL 授權）；高程資料 AWS Terrain Tiles（Mapzen 等公開資料）。背景音樂來自 Pixabay（alexrockbeat、Sonican、kaazoom、Lexin_Music、AtlasAudio），依 Pixabay Content License 使用。阿凱老師的旁白以 Fish Audio 聲音模型生成，聲音為阿凱老師本人授權。Minecraft 是 Mojang Synergies AB 的商標；本網站為學校教學用途，與 Mojang、Microsoft 沒有關聯。</p>
 </footer>
