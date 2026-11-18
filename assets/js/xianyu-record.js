@@ -85,6 +85,8 @@
     dlg.querySelector('[data-skip]').onclick = function () { wr(SKEY, { skip: true }); close(); };
   }
   function close() { if (dlg.close) dlg.close(); else dlg.removeAttribute('open'); R.render(); var cb = after; after = null; if (cb) cb(); }
+  // 換下一位同學：清掉登記、作答總用時與完成記號（進度另由 XianyuProgress.reset() 清）
+  R.clear = function () { [SKEY, QKEY, FKEY].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} }); R.render(); };
   R.ask = function (cb) {
     if (!dlg) build();
     after = cb || null;
