@@ -86,6 +86,9 @@
       <input id="cls" inputmode="numeric" maxlength="3" placeholder="班">
       <input id="seat" inputmode="numeric" maxlength="3" placeholder="座號">
     </div>
+    <label for="nm">姓名（可不填）</label>
+    <input id="nm" maxlength="12" autocomplete="off" placeholder="例如 王小明">
+    <p style="margin:6px 0 0;font-size:var(--fs-xs)">姓名只會印在這張證書上，不會傳到任何地方。</p>
     <button class="btn btn-main" type="submit">產生證書</button>
     <button class="btn btn-ghost" type="button" id="print" disabled>🖨 列印／存成 PDF</button>
     <div class="msg" id="msg" role="status"></div>
@@ -155,6 +158,7 @@
       <h2>通關證書</h2>
       <p class="sub2">${v.web ? '鱻魚特色學園・網頁闖關版' : 'Minecraft 教育版・鱻魚特色學園'}</p>
       <p class="name"><b>${blank($('grade').value)}</b> 年 <b>${blank($('cls').value)}</b> 班 <b>${blank($('seat').value)}</b> 號</p>
+      ${$('nm').value.trim() ? `<p class="name">姓名 <b>${esc($('nm').value.trim())}</b></p>` : ''}
       <p class="lead2">${v.web ? '在「鱻魚特色學園」網頁闖關版與 360° 虛擬導覽中，完成了以下挑戰：' : '在「鱻魚特色學園」課程世界中，完成了以下挑戰：'}</p>
       <table>
         <tr><td>鱻魚學園 4 站闖關</td><td>${v.stations} / 4 站</td></tr>
@@ -188,6 +192,11 @@
   });
   $('print').addEventListener('click', () => window.print());
   // 從網頁闖關版按「印證書」過來時，網址會帶 ?code=，直接幫忙填好並產生
+  // 網頁版登記過年班座號（xianyu-record.js），就先幫忙填好；測試用的 0 年不填
+  try {
+    const who = JSON.parse(localStorage.getItem('xianyu-web-student') || 'null');
+    if (who && !who.skip && who.grade > 0) { $('grade').value = who.grade; $('cls').value = who.cls; $('seat').value = who.seat; }
+  } catch (e) { /* 私密視窗：不預填 */ }
   const qc = new URLSearchParams(location.search).get('code');
   if (qc) { $('code').value = qc.toUpperCase().slice(0, 9); $('form').requestSubmit ? $('form').requestSubmit() : $('form').dispatchEvent(new Event('submit')); }
 </script>
