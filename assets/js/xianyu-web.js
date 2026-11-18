@@ -9,7 +9,7 @@
   var ABC = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
   var WEB_BASE = 112000000;                             // = 5×7×8×100×2×5×100×2×2，遊戲碼用不到的起點
 
-  function blank() { return { stations: {}, landmarks: {}, walk: {}, level: 'mid' }; }
+  function blank() { return { stations: {}, landmarks: {}, walk: {}, hi: {}, level: 'mid' }; }
   var state = null;
   function load() {
     if (state) return state;
@@ -17,8 +17,8 @@
     try {
       var raw = JSON.parse(localStorage.getItem(KEY) || 'null');
       if (raw && typeof raw === 'object') {
-        ['stations', 'landmarks', 'walk'].forEach(function (k) { if (raw[k] && typeof raw[k] === 'object') state[k] = raw[k]; });
-        if (raw.level === 'low' || raw.level === 'mid') state.level = raw.level;
+        ['stations', 'landmarks', 'walk', 'hi'].forEach(function (k) { if (raw[k] && typeof raw[k] === 'object') state[k] = raw[k]; });
+        if (raw.level === 'low' || raw.level === 'mid' || raw.level === 'high') state.level = raw.level;
       }
     } catch (e) { /* 私密視窗或封鎖儲存空間：只在這次開啟期間記得 */ }
     return state;

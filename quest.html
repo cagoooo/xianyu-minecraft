@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>網頁闖關版｜鱻魚特色學園</title>
-<meta name="description" content="不用安裝 Minecraft 也能玩：鱻魚特色學園 4 站問答闖關，阿凱老師語音帶你認識「鱻」字、魚的身體、石門水庫和愛護水資源，過關拿通關碼印證書。手機、平板、Chromebook 都能玩。">
+<meta name="description" content="不用安裝 Minecraft 也能玩：鱻魚特色學園 4 站問答闖關（低、中、高年級三種難度），阿凱老師語音帶你認識「鱻」字、魚的身體、石門水庫和愛護水資源，過關拿通關碼印證書。手機、平板、Chromebook 都能玩。">
 <meta property="og:title" content="鱻魚特色學園｜網頁闖關版">
 <meta property="og:description" content="4 站問答闖關、阿凱老師語音、通關證書。手機、平板、Chromebook 都能玩。">
 <meta property="og:image" content="https://cagoooo.github.io/xianyu-minecraft/assets/quest/cover.jpg">
@@ -119,8 +119,9 @@
       <p class="lead">跟著阿凱老師闖 4 個問答站：認識「鱻」字、魚的身體、石門水庫，學會愛護水資源。4 站都過關，就能拿到<strong>通關碼</strong>印證書！</p>
       <div class="tools-row" role="group" aria-label="設定">
         <span class="lv-group" role="group" aria-label="難度">
-          <button class="chip" type="button" data-lv="mid">📗 中年級：每站 3 題</button>
           <button class="chip" type="button" data-lv="low">📒 低年級：每站 1 題</button>
+          <button class="chip" type="button" data-lv="mid">📗 中年級：每站 3 題</button>
+          <button class="chip" type="button" data-lv="high">📕 高年級：進階題＋任務</button>
         </span>
         <button class="chip" type="button" id="mute" aria-pressed="false">🔊 語音開著</button>
       </div>
@@ -241,6 +242,10 @@
       after: null, afterText: '4 站全部完成！你就是愛水小尖兵！',
       task: '在藍站旁的草地上，用方塊蓋一個「愛水小作品」（一條魚、一個水滴或口號），完成後請老師來看！' }
   ];
+  // 高年級題組：和遊戲同一份（scripts/gen-quiz-pack.mjs 的 hi），題目與查證紀錄見 題目設計_鱻魚學園.md
+  var HI = {"s1":{"qs":[{"q":"「鱻」由三個「魚」疊成。下面哪一個字，也是由三個相同的字組成？","o":["森","鯨","鰓"],"a":0,"ok":"答對了！「森」是三個「木」，\n意思是樹木濃密的樣子。"},{"q":"下面哪一個「三疊字」，意思是「水流廣大的樣子」？","o":["焱","淼","鑫"],"a":1,"ok":"沒錯！「淼」是三個「水」。\n「焱」是火花、火焰，「鑫」是興盛、多財。"},{"q":"「森、淼、鱻」這類三疊字，常常帶有什麼感覺？","o":["數量很多、很盛大","數量很少","顏色很淡"],"a":0,"ok":"好厲害！三個字疊在一起，就有「很多、很盛大」的感覺：\n樹多成森，水大成淼。"}],"task":"在學習單寫出 3 個「三疊字」（例如森、淼、晶、焱、鑫），查字典寫下意思；再到廣場的「鱻」字雕塑旁，用方塊拼出其中一個字！"},"s2":{"qs":[{"q":"生態池裡的水草，白天行光合作用時，會放出什麼氣體，讓魚可以呼吸？","o":["氧氣","二氧化碳","氮氣"],"a":0,"ok":"答對了！水草吸收二氧化碳、放出氧氣，\n魚再用鰓把水裡的氧氣吸進身體。"},{"q":"「水草 → 小蝦 → 魚」這樣一個吃一個的關係，叫做什麼？","o":["食物鏈","光合作用","水循環"],"a":0,"ok":"沒錯！這就是食物鏈。\n很多條食物鏈連在一起，就變成食物網。"},{"q":"如果把生態池裡吃小蟲的魚全部撈走，最可能發生什麼事？","o":["蚊子的幼蟲（孑孓）可能變多","池水會變成海水","水草會立刻全部消失"],"a":0,"ok":"好厲害！很多小魚會吃孑孓，少了魚，蚊子可能變多。\n生態池裡每一種生物都很重要。"}],"task":"到西邊的生態池觀察，在學習單畫出一條池塘的食物鏈（至少 3 種生物），想一想：少了其中一種，其他生物會怎樣？"},"s3":{"qs":[{"q":"颱風豪雨把上游的泥沙沖進水庫、堆在底部，讓水庫能裝的水變少，這叫做什麼？","o":["淤積","蒸發","結冰"],"a":0,"ok":"答對了！泥沙越積越多，水庫就像裝了沙子的杯子，\n能裝的水變少了。"},{"q":"下面哪一種做法，最能減少泥沙流進水庫？","o":["在上游種樹、做好水土保持","在山坡地大量開墾","把廢土倒進溪裡"],"a":0,"ok":"沒錯！樹根能抓住泥土，\n下雨時泥沙就不容易被沖進水庫。"},{"q":"民國 93 年（2004 年）艾利颱風後，石門水庫的水太混濁，桃園發生了什麼事？","o":["南桃園大範圍停水十多天","下了一場大雪","水庫的水全部流光"],"a":0,"ok":"好厲害！水太濁，淨水場來不及處理，\n很多家庭十多天沒有自來水。\n後來政府花了很多年整治水庫和上游集水區。"}],"task":"小組討論：為什麼水庫的水會變少、變濁？在學習單寫出 2 個原因和 1 個保護水庫的方法。拿到石門地圖通行證後，記得到石門大壩看看溢洪道！"},"s4":{"qs":[{"q":"「水足跡」是什麼意思？","o":["生產一樣東西，從頭到尾用掉的水量","腳踩在水裡留下的腳印","下雨後地上的水痕"],"a":0,"ok":"答對了！像一件衣服，從種棉花到做成衣服，\n一路上用掉的水，都算在它的水足跡裡。"},{"q":"洗菜的水拿去澆花、洗衣服最後的水拿去沖馬桶，這叫做什麼？","o":["一水多用","浪費用水","海水淡化"],"a":0,"ok":"沒錯！同一份水用兩次以上，\n就是一水多用。"},{"q":"買馬桶、洗衣機、水龍頭時，認明哪一個標章，代表比較省水？","o":["省水標章","有機農產品標章","禁止吸菸標誌"],"a":0,"ok":"好厲害！省水標章是經濟部水利署推動的，\n有這個標章的產品，用起來就能少用水。"}],"task":"小組設計「生態池改善方案」：在藍站旁的草地上用方塊蓋出你們的設計（例如種水草、做遮蔭、讓魚有躲藏的地方），完成後向老師說明為什麼這樣設計！"}};
+  ST.forEach(function (s) { s.hi = HI[s.id]; });
+  var LV = { low: '低年級', mid: '中年級', high: '高年級' };
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var ABCD = ['A', 'B', 'C'];
@@ -248,12 +253,12 @@
   function drawHub() {
     $('stamps').innerHTML = ST.map(function (s) {
       var d = P.has('stations', s.id);
-      return '<div class="stamp' + (d ? ' done' : '') + '" style="--c:' + s.c + '">' + esc(s.name.split('・')[0]) + '<br>' + (d ? '過關' : '未完成') + '</div>';
+      return '<div class="stamp' + (d ? ' done' : '') + '" style="--c:' + s.c + '">' + esc(s.name.split('・')[0]) + '<br>' + (d ? (P.has('hi', s.id) ? '過關★' : '過關') : '未完成') + '</div>';
     }).join('');
     $('grid').innerHTML = ST.map(function (s, i) {
       return '<button type="button" class="st-card' + (P.has('stations', s.id) ? ' done' : '') + '" style="--c:' + s.c + '" data-i="' + i + '">' +
         '<img src="' + s.img + '" alt="' + esc(s.alt) + '" loading="lazy" width="960" height="540">' +
-        '<span class="bd"><span class="tag">' + s.subj + '</span><h3>' + esc(s.name) + '</h3><p>' + (P.get().level === 'low' ? '1' : '3') + ' 題問答＋1 個小任務</p><span class="go">開始闖關 →</span></span></button>';
+        '<span class="bd"><span class="tag">' + s.subj + '</span><h3>' + esc(s.name) + '</h3><p>' + ({ low: '1 題問答＋1 個小任務', mid: '3 題問答＋1 個小任務', high: '3 題進階題＋高年級任務' })[P.get().level] + '</p><span class="go">開始闖關 →</span></span></button>';
     }).join('');
     var code = P.code();
     $('finish').classList.toggle('show', !!code);
@@ -270,13 +275,14 @@
     $('bubble').innerHTML = '<span class="who">阿凱老師</span>' + esc(text);
     lastVoice = voiceId; V.play(voiceId);
   }
-  function qsFor(s) { return P.get().level === 'low' ? s.qs.slice(0, 1) : s.qs; }
+  function qsFor(s) { var lv = P.get().level; return lv === 'low' ? s.qs.slice(0, 1) : lv === 'high' ? s.hi.qs : s.qs; }
+  function vid(kind, k) { return 'quiz_' + cur.id + (P.get().level === 'high' ? 'h' : '') + '_' + kind + k; }
   function dots(n, at) { var h = '<span class="qdots" aria-hidden="true">'; for (var i = 0; i < n; i++) h += '<i class="' + (i <= at ? 'on' : '') + '"></i>'; return h + '</span>'; }
   function open(i) {
     cur = ST[i]; qi = 0;
     var dlg = $('dlg');
     dlg.style.setProperty('--c', cur.c);
-    $('dlgTitle').textContent = cur.name + '（' + cur.subj + '）';
+    $('dlgTitle').textContent = cur.name + '（' + cur.subj + '・' + LV[P.get().level] + '）';
     $('dlgImg').src = cur.img; $('dlgImg').alt = cur.alt;
     say(cur.intro, 'quiz_' + cur.id + '_intro');
     $('qbox').innerHTML = '<h3>' + esc(cur.name) + '</h3><p class="q">先聽阿凱老師說，準備好就開始答題！</p>' +
@@ -287,7 +293,7 @@
   }
   function showQ() {
     var list = qsFor(cur), q = list[qi];
-    say('第 ' + (qi + 1) + ' 題：' + q.q, 'quiz_' + cur.id + '_q' + (qi + 1));
+    say('第 ' + (qi + 1) + ' 題：' + q.q, vid('q', qi + 1));
     $('qbox').innerHTML = '<h3>第 ' + (qi + 1) + ' 題 / 共 ' + list.length + ' 題</h3><p class="q">' + esc(q.q) + '</p>' +
       '<div class="opts">' + q.o.map(function (t, k) { return '<button class="opt" type="button" data-k="' + k + '"><b>' + ABCD[k] + '</b><span>' + esc(t) + '</span></button>'; }).join('') + '</div>' +
       '<div class="qnav" id="qnav">' + dots(list.length, qi) + '</div>';
@@ -303,7 +309,7 @@
     }
     $('qbox').querySelectorAll('.opt').forEach(function (b) { b.disabled = true; });
     btn.classList.add('right');
-    say(q.ok, 'quiz_' + cur.id + '_ok' + (qi + 1));
+    say(q.ok, vid('ok', qi + 1));
     var last = qi === qsFor(cur).length - 1;
     var nb = document.createElement('button');
     nb.className = 'btn btn-main'; nb.type = 'button';
@@ -313,11 +319,14 @@
     nb.focus();
   }
   function clear() {
+    var high = P.get().level === 'high';
     P.mark('stations', cur.id);
+    if (high) P.mark('hi', cur.id);
     say(cur.afterText, cur.after);
     var all = P.count('stations') >= 4;
     $('qbox').innerHTML = '<p class="clear-badge">🎉 過關！</p><p class="q">' + esc(cur.name) + ' 完成</p>' +
-      '<div class="mc-task">🎮 <strong>在 Minecraft 世界裡還有一個任務：</strong>\n' + esc(cur.task) + '</div>' +
+      (high ? '<div class="mc-task">📝 <strong>高年級任務：</strong>\n' + esc(cur.hi.task) + '</div>'
+            : '<div class="mc-task">🎮 <strong>在 Minecraft 世界裡還有一個任務：</strong>\n' + esc(cur.task) + '</div>') +
       '<div class="qnav"><button class="btn btn-main" type="button" id="back">' + (all ? '🏅 看我的通關碼' : '回地圖，選下一站 →') + '</button></div>';
     $('back').onclick = function () { close(); if (all) $('finish').scrollIntoView({ behavior: 'smooth', block: 'center' }); };
     $('back').focus();
@@ -330,7 +339,7 @@
   $('replay').onclick = function () { if (lastVoice) V.play(lastVoice); };
   function toggleMute() { V.toggle(); drawHub(); }
   $('mute').onclick = toggleMute; $('dlgMute').onclick = toggleMute;
-  document.querySelectorAll('[data-lv]').forEach(function (b) { b.onclick = function () { P.setLevel(b.dataset.lv); drawHub(); }; });
+  document.querySelectorAll('[data-lv]').forEach(function (b) { b.onclick = function () { P.setLevel(b.dataset.lv); V.play('lv_' + b.dataset.lv); drawHub(); }; });
   $('reset').onclick = function () { if (confirm('要清除這台裝置上的闖關、景點和走讀進度，從頭開始嗎？')) P.reset(); };
   P.on(drawHub);
   drawHub();
