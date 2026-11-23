@@ -109,7 +109,7 @@
         <li>或跟阿凱老師說話，按「我的進度」，聊天框也會出現通關碼。</li>
         <li>繼續完成走讀、生活任務後再按一次「我的進度」，通關碼會更新成最新成績。</li>
         <li>玩<a href="quest.html">網頁闖關版</a>的同學：4 站過關後，畫面上就會出現通關碼。</li>
-        <li>證書會列出拿到的徽章：遊戲版最多 6 枚；「高年級挑戰者」「水庫守護者」要在網頁版拿。</li>
+        <li>證書會列出拿到的徽章，遊戲版和網頁版都是 8 枚（學生版世界檔 v1.3.0 起，遊戲裡也有魔王關）。更早版本的遊戲通關碼最多 6 枚。</li>
       </ol>
       <p style="margin:10px 0 0">通關碼只在你的瀏覽器裡計算，不會傳到任何地方。</p>
     </div>
@@ -146,6 +146,17 @@
     let n = 0n; for (const x of d.slice(0, 6)) n = n * 32n + BigInt(x);
     if (n >= M) return null;
     n = (((n - B) % M + M) % M) * inv % M;
+    // 112,600,000 起 = 遊戲版第 2 版（2026-11-23，學生版世界檔 v1.3.0 起）：多記高年級站數和魔王關
+    //   編碼順序和遊戲 certCode() 一致：(闖關站數,高年級站數) 15 種、景點 7、走讀 8、垃圾分類 31、關燈 2、生態 5、步行 10、太陽能 2、冷氣 2、魔王關 2
+    if (n >= 112600000n) {
+      let r = n - 112600000n;
+      if (r >= 20832000n) return null;
+      const take = (m) => { const x = Number(r % m); r /= m; return x; };
+      const boss = take(2n), ac = take(2n), solar = take(2n), walk100m = take(10n), eco = take(5n), power = take(2n), recycle = take(31n), walk = take(8n), landmarks = take(7n), pair = Number(r);
+      let stations = 0; while ((stations + 1) * (stations + 2) / 2 <= pair) stations++;
+      const hi = pair - stations * (stations + 1) / 2;
+      return { stations, hi, landmarks, walk, recycle, power, eco, walk100m, solar, ac, boss, g2: true };
+    }
     // 112,100,000 起 = 網頁版第 2 版（2026-11-23）：景點、走讀、垃圾分類、關燈、太陽能、冷氣、魔王關、高年級站數
     //   編碼順序和 assets/js/xianyu-web.js 的 code() 一致，改一邊要一起改另一邊
     if (n >= 112100000n) {
@@ -167,7 +178,7 @@
     return n === 0n ? out : null;
   }
   // 徽章規則和 assets/js/xianyu-web.js 的 BADGES 一致
-  // 第 4 欄 true＝遊戲裡拿到的通關碼也算得出來（遊戲碼沒有記高年級站數和魔王關，2026-11-23）
+  // 第 4 欄 true＝第 1 版遊戲通關碼也算得出來（第 1 版遊戲碼沒有記高年級站數和魔王關；第 2 版遊戲碼 g2 八枚都算得出來）
   const BADGES = [
     ['🏅', '愛水小尖兵', (v) => v.stations >= 4, true], ['🎓', '高年級挑戰者', (v) => v.hi >= 4, false],
     ['🧭', '石門小導遊', (v) => v.landmarks >= 6, true], ['🌊', '走讀達人', (v) => v.walk >= 7, true],
@@ -175,9 +186,9 @@
     ['☀️', '綠能小博士', (v) => v.solar, true], ['🛡️', '水庫守護者', (v) => v.boss, false],
   ];
   const badgeLine = (v) => {
-    const pool = v.web ? BADGES : BADGES.filter((b) => b[3]);
+    const pool = v.web || v.g2 ? BADGES : BADGES.filter((b) => b[3]);
     const got = pool.filter((b) => b[2](v));
-    return `<span class="bdg-ic">${got.length ? got.map((b) => b[0]).join(' ') : '－'}</span><span class="bdg-n">${got.map((b) => `<span class="nm">${b[1]}</span>`).join('、') || '還沒有徽章'}（${got.length}/${pool.length}${v.web ? '' : '，遊戲版'}）</span>`;
+    return `<span class="bdg-ic">${got.length ? got.map((b) => b[0]).join(' ') : '－'}</span><span class="bdg-n">${got.map((b) => `<span class="nm">${b[1]}</span>`).join('、') || '還沒有徽章'}（${got.length}/${pool.length}${v.web || v.g2 ? '' : '，舊版遊戲通關碼'}）</span>`;
   };
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -195,7 +206,7 @@
       ${$('nm').value.trim() ? `<p class="name">姓名 <b>${esc($('nm').value.trim())}</b></p>` : ''}
       <p class="lead2">${v.web ? '在「鱻魚特色學園」網頁版（闖關、360° 導覽、生活減碳、魔王關）中，完成了以下挑戰：' : '在「鱻魚特色學園」課程世界中，完成了以下挑戰：'}</p>
       <table>
-        <tr><td>鱻魚學園 4 站闖關</td><td>${v.stations} / 4 站</td></tr>
+        <tr><td>鱻魚學園 4 站闖關</td><td>${v.stations} / 4 站${v.hi ? `（高年級挑戰 ${v.hi} 站）` : ''}</td></tr>
         <tr><td>石門地圖景點${v.web ? '導覽' : '打卡'}</td><td>${v.landmarks} / 6 個</td></tr>
         <tr><td>環境教育走讀</td><td>${v.walk} / 7 站</td></tr>
         ${v.v2 ? `
@@ -206,12 +217,13 @@
         <tr><td>魔王關・水庫守護者</td><td>${mark(v.boss)}</td></tr>
         <tr class="bdg-row"><td>獲得徽章</td><td>${badgeLine(v)}</td></tr>` : ''}
         ${v.web ? '' : `
-        <tr><td>垃圾分類</td><td>${v.recycle >= 99 ? '99 件以上' : v.recycle + ' 件'}</td></tr>
+        <tr><td>垃圾分類</td><td>${v.g2 && v.recycle >= 30 ? '30 件以上' : v.recycle >= 99 ? '99 件以上' : v.recycle + ' 件'}</td></tr>
         <tr><td>隨手關燈</td><td>${mark(v.power)}</td></tr>
         <tr><td>冷氣調到 26～28 度</td><td>${mark(v.ac)}</td></tr>
         <tr><td>太陽能小站</td><td>${mark(v.solar)}</td></tr>
         <tr><td>生態觀察家</td><td>${v.eco} / 4 種生物</td></tr>
-        <tr><td>綠色交通（步行）</td><td>約 ${(v.walk100m * 100).toLocaleString()} 公尺</td></tr>
+        <tr><td>綠色交通（步行）</td><td>${v.g2 && v.walk100m >= 9 ? '900 公尺以上' : `約 ${(v.walk100m * 100).toLocaleString()} 公尺`}</td></tr>
+        ${v.g2 ? `<tr><td>魔王關・水庫守護者</td><td>${mark(v.boss)}</td></tr>` : ''}
         <tr class="bdg-row"><td>獲得徽章</td><td>${badgeLine(v)}</td></tr>`}
       </table>
       <div class="foot">
