@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>魔王關・水庫守護者｜鱻魚特色學園</title>
+<meta name="description" content="鱻魚特色學園網頁版魔王關：10 題混合題型（排序、配對、是非、選擇），3 顆愛心，通過就是水庫守護者，拿到最後一枚徽章。">
+<meta property="og:title" content="鱻魚特色學園｜魔王關・水庫守護者">
+<meta property="og:description" content="排序、配對、是非、選擇 10 題，3 顆愛心，守護石門水庫！">
+<meta property="og:image" content="https://cagoooo.github.io/xianyu-minecraft/assets/quest/s3.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=1.3.0">
+<style>
+  .b-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 22px; padding: 26px 0 20px; align-items: start; }
+  .arena { background: linear-gradient(160deg, #2b1d3a, #1c2f4a); color: #fff; border-radius: 18px; padding: clamp(18px, 3vw, 30px); min-height: 420px; position: relative; overflow: hidden; }
+  .arena::before { content: ""; position: absolute; inset: 0; background: url('assets/quest/s3.jpg') center/cover; opacity: .16; pointer-events: none; }
+  .arena > * { position: relative; }
+  .arena h1 { margin: 6px 0 8px; font-size: clamp(1.8rem, 3.6vw, 2.8rem); line-height: 1.2; }
+  .arena p { color: #e4e8f2; }
+  .top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+  .hearts { font-size: 1.6rem; letter-spacing: 2px; }
+  .prog { margin-left: auto; font-weight: 700; background: rgba(255,255,255,.12); border-radius: 999px; padding: 4px 14px; }
+  .qtype { display: inline-block; font-size: var(--fs-xs); font-weight: 900; background: #f2c230; color: #3a2a00; border-radius: 999px; padding: 2px 12px; }
+  .q { font-size: clamp(1.25rem, 2.4vw, 1.7rem); font-weight: 900; margin: 10px 0 16px; line-height: 1.5; }
+  .bt { font: inherit; font-weight: 700; font-size: var(--fs-md); border: 3px solid rgba(255,255,255,.25); background: rgba(255,255,255,.1); color: #fff; border-radius: 14px; padding: 12px 16px; min-height: 56px; cursor: pointer; text-align: left; }
+  .bt:hover:not(:disabled) { background: rgba(255,255,255,.2); }
+  .bt:focus-visible, .go:focus-visible { outline: 3px solid #f2c230; outline-offset: 2px; }
+  .bt.sel { border-color: #f2c230; background: rgba(242,194,48,.25); }
+  .bt.right { border-color: #6ee07a; background: rgba(110,224,122,.25); }
+  .bt.wrong { border-color: #ff8a80; background: rgba(255,138,128,.22); }
+  .bt:disabled { cursor: default; }
+  .grid1 { display: grid; gap: 10px; }
+  .tf { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .tf .bt { text-align: center; font-size: 2rem; min-height: 90px; }
+  .slots { display: grid; gap: 8px; counter-reset: s; margin-bottom: 12px; }
+  .slots div { border: 2px dashed rgba(255,255,255,.35); border-radius: 12px; padding: 10px 14px; min-height: 48px; display: flex; align-items: center; gap: 10px; }
+  .slots div::before { counter-increment: s; content: counter(s); width: 28px; height: 28px; border-radius: 50%; background: #f2c230; color: #3a2a00; font-weight: 900; display: grid; place-items: center; flex: none; }
+  .match { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px 14px; }
+  .match .col { display: grid; gap: 8px; align-content: start; }
+  .tag-n { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: #f2c230; color: #3a2a00; font-weight: 900; margin-right: 8px; font-size: .9rem; }
+  .fbk { margin-top: 14px; background: rgba(0,0,0,.28); border-radius: 12px; padding: 12px 14px; }
+  .fbk.good { border-left: 6px solid #6ee07a; } .fbk.bad { border-left: 6px solid #ff8a80; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .go { font: inherit; font-weight: 900; font-size: var(--fs-md); border: 0; border-radius: 12px; padding: 12px 22px; background: #f2c230; color: #3a2a00; cursor: pointer; min-height: 50px; text-decoration: none; display: inline-flex; align-items: center; }
+  .go.ghost { background: rgba(255,255,255,.15); color: #fff; }
+  .side { display: flex; flex-direction: column; gap: 14px; }
+  .side .panel { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }
+  .req { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; font-size: var(--fs-sm); }
+  .big-ic { font-size: 4rem; line-height: 1; }
+  .shake { animation: shake .35s; }
+  @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+  @media (prefers-reduced-motion: reduce) { .shake { animation: none; } }
+  @media (max-width: 1000px) { .b-wrap { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 640px) { .match { grid-template-columns: minmax(0, 1fr); } .go { flex: 1 1 auto; justify-content: center; } }
+</style>
+</head>
+<body data-page="boss">
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="assets/icon.svg" alt="">鱻魚特色學園</a>
+    <nav class="topnav" aria-label="頁面導覽">
+      <a href="quest.html">網頁闖關版</a>
+      <a href="tour.html">360° 虛擬導覽</a>
+      <a href="life.html">生活減碳</a>
+      <a href="boss.html" aria-current="page">魔王關</a>
+      <a href="certificate.html">印證書</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="b-wrap">
+    <section class="arena" id="arena" aria-live="polite"></section>
+    <aside class="side">
+      <div class="panel">
+        <strong>魔王關規則</strong>
+        <ul class="req">
+          <li>❤️ 一開始有 3 顆愛心，答錯一題少一顆</li>
+          <li>📝 10 題：排序、配對、是非、選擇都有</li>
+          <li>🛡️ 答完 10 題還有愛心，就是「水庫守護者」</li>
+          <li>💔 愛心用完可以馬上重新挑戰</li>
+        </ul>
+      </div>
+      <div class="panel"><div data-who></div></div>
+    </aside>
+  </div>
+  <h2 style="margin:6px 0 10px;font-size:clamp(1.3rem,2.2vw,1.8rem)">🗺️ 關卡地圖</h2>
+  <div data-levels></div>
+  <div data-badges style="margin:26px 0 30px"></div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src="assets/icon.svg" alt="" width="48" height="48">
+      <div><strong>鱻魚特色學園</strong><span>石門國小的 Minecraft 教育版課程世界，網頁版讓沒裝遊戲的裝置也能一起學。</span></div>
+    </div>
+    <ul class="footer-points">
+      <li><span class="fp-icon">🛡️</span><div><strong>魔王關</strong><small>闖關 4 站＋走讀 7 題後解鎖</small></div></li>
+      <li><span class="fp-icon">🏆</span><div><strong>8 枚徽章</strong><small>完成關卡拿徽章，會印在通關證書上</small></div></li>
+      <li><span class="fp-icon">🔒</span><div><strong>不收姓名</strong><small>不用登入；登記年班座號後，闖關進度會傳給老師</small></div></li>
+    </ul>
+    <nav class="footer-links" aria-label="快速連結">
+      <a href="quest.html">🎯 網頁闖關版</a>
+      <a href="tour.html">🧭 360° 虛擬導覽</a>
+      <a href="life.html">♻️ 生活減碳</a>
+      <a href="certificate.html">🏅 印通關證書</a>
+      <a href="index.html">🏠 課程首頁</a>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    <p class="site-credit">Made with <span class="site-credit__heart" aria-label="愛心">❤️</span> by
+      <a href="https://cagoooo.github.io/Akai/" target="_blank" rel="noopener noreferrer" class="site-credit__author">阿凱老師</a>
+      <span class="footer-school"><span class="footer-dot" aria-hidden="true">・</span>桃園市龍潭區石門國民小學</span></p>
+    <p class="version-tag">v1.5.0・2026-11-23</p>
+  </div>
+  <p class="legal">題目內容與查證紀錄見課程的題目設計文件；冷氣溫度建議依台電公開的省電建議。阿凱老師的旁白以 Fish Audio 聲音模型生成，聲音為阿凱老師本人授權。Minecraft 是 Mojang Synergies AB 的商標；本網站為學校教學用途，與 Mojang、Microsoft 沒有關聯。</p>
+</footer>
+
+<script src="assets/js/xianyu-web.js?v=1.5.0"></script>
+<script src="assets/js/xianyu-record.js?v=1.5.0"></script>
+<script src="assets/js/xianyu-badges.js?v=1.5.0"></script>
+<script>
+(function () {
+  'use strict';
+  var P = window.XianyuProgress, V = window.XianyuVoice, R = window.XianyuRecord;
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var UNLOCK = /[?&]unlock=1\b/.test(location.search);   // 老師示範用：網址加 ?unlock=1 直接開放
+  // 題目全部取自已查證過的內容（題目設計_鱻魚學園.md、走讀與景點故事、生活任務）
+  var QS = [
+    { t: 'order', q: '把「水的旅程」排好順序：從天上落下，到你家的水龍頭', items: ['雨水落在山上', '流進大漢溪', '存在石門水庫', '送到淨水場', '從你家的水龍頭流出來'],
+      ex: '雨水落在山上 → 流進大漢溪 → 存在石門水庫 → 送到淨水場 → 從你家的水龍頭流出來。每一滴水都得來不易！' },
+    { t: 'tf', q: '石門水庫建在大漢溪上。', a: true, ex: '對！石門水庫在大漢溪的中游，橫跨龍潭和大溪。' },
+    { t: 'choice', q: '「鱻」是哪一個字的異體字？', o: ['鯨', '鮮', '魯'], a: 1, ex: '鱻是「鮮」的異體字，一個「魚」11 畫，三個魚就是 33 畫。' },
+    { t: 'match', q: '把每個景點和它的特色配對起來', pairs: [['三坑老街', '黑白洗洗衣池'], ['十一份觀光文化園區', '鯨魚壁畫'], ['南苑生態公園', '青楓和槭樹'], ['石門大壩', '溢洪道']],
+      ex: '三坑老街有黑白洗、十一份有鯨魚壁畫、南苑有三千多棵青楓和槭樹、石門大壩用溢洪道放水。' },
+    { t: 'tf', q: '魚是用肺呼吸的。', a: false, ex: '錯！魚用鰓把水裡的氧氣吸進身體。' },
+    { t: 'choice', q: '喝完的鋁罐，要丟到哪一類？', o: ['紙類', '鐵鋁罐', '廚餘'], a: 1, ex: '鋁罐丟鐵鋁罐回收，可以熔化重新做成新的罐子。' },
+    { t: 'choice', q: '學校要裝太陽能板，裝在哪裡發電最多？', o: ['北邊的屋頂', '南邊的屋頂', '大樹的樹蔭下'], a: 1, ex: '我們這裡中午的太陽在南邊的天空，朝南的屋頂照到最多陽光。' },
+    { t: 'tf', q: '家裡的魚不想養了，倒進溪裡放生最好。', a: false, ex: '錯！隨便放到野外，牠可能跟本土的魚搶食物、破壞生態。可以送給願意照顧的人，或請教寵物店。' },
+    { t: 'choice', q: '下大雨水太多時，石門大壩用什麼把水安全地放出去？', o: ['溢洪道', '煙囪', '水管'], a: 0, ex: '溢洪道讓多出來的水安全地流出去，保護大壩。' },
+    { t: 'tf', q: '冷氣設定在 26～28 度，再搭配電風扇，涼快又省電。', a: true, ex: '對！這是台電的省電建議；冷氣每調高 1 度，大約可以省下 6% 的電。' }
+  ];
+  var TYPE = { order: '排序題', tf: '是非題', choice: '選擇題', match: '配對題' };
+  var qi = 0, hearts = 3, wrongs = 0, t0 = 0, answered = false;
+
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function heartsHtml() { var h = ''; for (var i = 0; i < 3; i++) h += i < hearts ? '❤️' : '🖤'; return '<span class="hearts" aria-label="剩下 ' + hearts + ' 顆愛心">' + h + '</span>'; }
+
+  // ── 入口：鎖住／開始／已通過 ──
+  function intro() {
+    var a = $('arena');
+    if (!P.bossUnlocked() && !UNLOCK && !P.get().boss) {
+      var st = P.count('stations'), wk = P.count('walk');
+      a.innerHTML = '<div class="big-ic">🔒</div><h1>魔王關還沒解鎖</h1><p>完成下面兩件事，水庫守護者的考驗就會打開：</p>' +
+        '<ul class="req" style="color:#fff"><li>' + (st >= 4 ? '✅' : '⬜') + ' 網頁闖關版 4 站過關（目前 ' + st + '/4）</li><li>' + (wk >= 7 ? '✅' : '⬜') + ' 360° 導覽 7 個走讀挑戰答對（目前 ' + wk + '/7）</li></ul>' +
+        '<div class="row"><a class="go" href="' + (st < 4 ? 'quest.html' : 'tour.html') + '">' + (st < 4 ? '去闖關版 →' : '去 360° 導覽 →') + '</a></div>';
+      return;
+    }
+    a.innerHTML = '<div class="big-ic">🛡️</div><span class="qtype">魔王關</span><h1>水庫守護者的考驗</h1>' +
+      '<p>10 題混合題型，你有 3 顆愛心，答錯一題少一顆。用學到的本事，守護石門水庫吧！</p>' +
+      (P.get().boss ? '<p>✔ 你已經是水庫守護者了，可以再挑戰一次！</p>' : '') +
+      '<div class="row"><button class="go" type="button" id="start">⚔️ 開始挑戰</button></div>';
+    $('start').onclick = function () { R.ensure(start); };
+  }
+  function start() {
+    qi = 0; hearts = 3; wrongs = 0; t0 = Date.now();
+    V.play('web_boss_intro');
+    R.log('boss', 'boss_start');
+    show();
+  }
+
+  // ── 每一題 ──
+  function frame(inner) {
+    var q = QS[qi];
+    $('arena').innerHTML = '<div class="top">' + heartsHtml() + '<span class="qtype">' + TYPE[q.t] + '</span><span class="prog">第 ' + (qi + 1) + ' / ' + QS.length + ' 題</span></div>' +
+      '<p class="q">' + esc(q.q) + '</p>' + inner + '<div id="fbk"></div>';
+  }
+  function show() {
+    answered = false;
+    var q = QS[qi];
+    if (q.t === 'choice') {
+      frame('<div class="grid1">' + q.o.map(function (o, k) { return '<button class="bt" type="button" data-k="' + k + '"><span class="tag-n">' + 'ABC'[k] + '</span>' + esc(o) + '</button>'; }).join('') + '</div>');
+      $('arena').querySelectorAll('[data-k]').forEach(function (b) { b.onclick = function () { judge(+b.dataset.k === q.a, b, $('arena').querySelector('[data-k="' + q.a + '"]')); }; });
+    } else if (q.t === 'tf') {
+      frame('<div class="tf"><button class="bt" type="button" data-v="1" aria-label="對">⭕</button><button class="bt" type="button" data-v="0" aria-label="錯">❌</button></div>');
+      $('arena').querySelectorAll('[data-v]').forEach(function (b) { b.onclick = function () { judge((b.dataset.v === '1') === q.a, b, $('arena').querySelector('[data-v="' + (q.a ? 1 : 0) + '"]')); }; });
+    } else if (q.t === 'order') {
+      var pool = shuffle(q.items), picked = [];
+      frame('<div class="slots" id="slots">' + q.items.map(function () { return '<div></div>'; }).join('') + '</div><div class="grid1" id="pool"></div><div class="row"><button class="go ghost" type="button" id="clr">↺ 重排</button></div>');
+      var draw = function () {
+        $('slots').querySelectorAll('div').forEach(function (d, i) { d.textContent = picked[i] || ''; });
+        $('pool').innerHTML = pool.map(function (t, i) { return picked.indexOf(t) >= 0 ? '' : '<button class="bt" type="button" data-i="' + i + '">' + esc(t) + '</button>'; }).join('');
+        $('pool').querySelectorAll('[data-i]').forEach(function (b) { b.onclick = function () { picked.push(pool[+b.dataset.i]); draw(); if (picked.length === q.items.length) judge(picked.join('|') === q.items.join('|')); }; });
+      };
+      $('clr').onclick = function () { if (!answered) { picked = []; draw(); } };
+      draw();
+    } else if (q.t === 'match') {
+      var rights = shuffle(q.pairs.map(function (p) { return p[1]; })), chosen = {}, left = null;
+      frame('<p style="margin:-6px 0 10px">先點有數字的景點，再點它的特色。</p><div class="match"><div class="col" id="ml"></div><div class="col" id="mr"></div></div><div class="row"><button class="go ghost" type="button" id="clr">↺ 重配</button></div>');
+      var drawM = function () {
+        $('ml').innerHTML = q.pairs.map(function (p, i) { return '<button class="bt' + (left === i ? ' sel' : '') + '" type="button" data-l="' + i + '"><span class="tag-n">' + (i + 1) + '</span>' + esc(p[0]) + (chosen[i] != null ? '<br><small>→ ' + esc(rights[chosen[i]]) + '</small>' : '') + '</button>'; }).join('');
+        var used = Object.keys(chosen).map(function (k) { return chosen[k]; });
+        $('mr').innerHTML = rights.map(function (r, j) { return '<button class="bt" type="button" data-r="' + j + '"' + (used.indexOf(j) >= 0 ? ' disabled style="opacity:.4"' : '') + '>' + esc(r) + '</button>'; }).join('');
+        $('ml').querySelectorAll('[data-l]').forEach(function (b) { b.onclick = function () { if (answered) return; left = +b.dataset.l; delete chosen[left]; drawM(); }; });
+        $('mr').querySelectorAll('[data-r]').forEach(function (b) { b.onclick = function () {
+          if (answered) return;
+          if (left == null) { left = q.pairs.findIndex(function (p, i) { return chosen[i] == null; }); }
+          chosen[left] = +b.dataset.r; left = null; drawM();
+          if (Object.keys(chosen).length === q.pairs.length) judge(q.pairs.every(function (p, i) { return rights[chosen[i]] === p[1]; }));
+        }; });
+      };
+      $('clr').onclick = function () { if (!answered) { chosen = {}; left = null; drawM(); } };
+      drawM();
+    }
+    var first = $('arena').querySelector('.bt'); if (first) first.focus();
+  }
+  function judge(ok, picked, correct) {
+    if (answered) return;
+    answered = true;
+    var q = QS[qi];
+    $('arena').querySelectorAll('.bt').forEach(function (b) { b.disabled = true; });
+    if (picked) picked.classList.add(ok ? 'right' : 'wrong');
+    if (!ok && correct) correct.classList.add('right');
+    if (!ok) { hearts--; wrongs++; $('arena').classList.remove('shake'); void $('arena').offsetWidth; $('arena').classList.add('shake'); V.play('quiz_retry'); }
+    $('arena').querySelector('.top').firstChild.outerHTML = heartsHtml();
+    var last = qi === QS.length - 1;
+    $('fbk').innerHTML = '<div class="fbk ' + (ok ? 'good' : 'bad') + '"><strong>' + (ok ? '✔ 答對了！' : '✘ 少一顆愛心') + '</strong><br>' + esc(q.ex) + '</div>' +
+      '<div class="row"><button class="go" type="button" id="nx">' + (hearts <= 0 ? '看結果' : last ? '🛡️ 看結果' : '下一題 →') + '</button></div>';
+    $('nx').onclick = function () { if (hearts <= 0) fail(); else if (last) win(); else { qi++; show(); } };
+    $('nx').focus();
+  }
+  function secs() { return Math.min(7200, Math.round((Date.now() - t0) / 1000)); }
+  function fail() {
+    V.play('web_boss_fail');
+    R.log('boss', 'boss_fail', { sec: secs(), wrong: wrongs });
+    $('arena').innerHTML = '<div class="big-ic">💔</div><h1>愛心用完了</h1><p>沒關係！回去複習一下，再來挑戰一次，你一定可以的。你答到第 ' + (qi + 1) + ' 題。</p>' +
+      '<div class="row"><button class="go" type="button" id="again">⚔️ 再挑戰一次</button><a class="go ghost" href="quest.html">回闖關版複習</a></div>';
+    $('again').onclick = start;
+  }
+  function win() {
+    var first = !P.get().boss;
+    P.setBoss();
+    V.play('web_boss_clear');
+    R.log('boss', 'boss_clear', { sec: secs(), wrong: wrongs });
+    var code = P.code();
+    $('arena').innerHTML = '<div class="big-ic">🛡️</div><span class="qtype">' + (first ? '新徽章！' : '再次通過') + '</span><h1>你是水庫守護者！</h1>' +
+      '<p>剩下 ' + heartsHtml() + '，答錯 ' + wrongs + ' 題。每一滴水都得來不易，我們一起好好珍惜。</p>' +
+      (code ? '<p>最新通關碼：<strong style="font-size:1.4rem;letter-spacing:.1em">' + code + '</strong></p>' : '') +
+      '<div class="row">' + (code ? '<a class="go" href="certificate.html?code=' + encodeURIComponent(code) + '">🖨 印我的通關證書</a>' : '') +
+      '<button class="go ghost" type="button" id="again">⚔️ 再挑戰一次</button></div>';
+    $('again').onclick = start;
+  }
+  P.on(function () { if (!$('arena').querySelector('.q') && !$('arena').querySelector('#again')) intro(); });
+  intro();
+})();
+</script>
+</body>
+</html>

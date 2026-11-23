@@ -105,8 +105,9 @@
     <nav class="topnav" aria-label="頁面導覽">
       <a href="quest.html" aria-current="page">網頁闖關版</a>
       <a href="tour.html">360° 虛擬導覽</a>
+      <a href="life.html">生活減碳</a>
+      <a href="boss.html">魔王關</a>
       <a href="certificate.html">印證書</a>
-      <a href="index.html">課程首頁</a>
     </nav>
   </div>
 </header>
@@ -143,7 +144,7 @@
       <h2>🏅 4 站全部過關！你就是愛水小尖兵！</h2>
       <p style="margin:0">你的通關碼：</p>
       <span class="code" id="code">—</span>
-      <p style="margin:6px 0 0;color:var(--ink-soft);font-size:var(--fs-sm)">把通關碼抄在學習單上，或直接按右邊的按鈕印證書。再去「360° 虛擬導覽」完成景點和走讀，通關碼會更新成最新成績。</p>
+      <p style="margin:6px 0 0;color:var(--ink-soft);font-size:var(--fs-sm)">把通關碼抄在學習單上，或直接按右邊的按鈕印證書。再去「360° 虛擬導覽」「生活減碳任務」和「魔王關」，通關碼和證書上的徽章會更新成最新成績。</p>
     </div>
     <div class="cta">
       <a class="btn btn-main" id="certLink" href="certificate.html">🖨 印我的通關證書</a>
@@ -154,6 +155,9 @@
   <h2 style="margin:22px 0 4px;font-size:clamp(1.4rem,2.4vw,2rem)">選一站開始闖關</h2>
   <p style="margin:0 0 18px;color:var(--ink-soft)">建議照 ①→④ 的順序走，跟遊戲裡沿著步道走一樣；也可以先挑喜歡的。</p>
   <div class="st-grid" id="grid"></div>
+  <h2 style="margin:26px 0 10px;font-size:clamp(1.3rem,2.2vw,1.8rem)">🗺️ 關卡地圖</h2>
+  <div data-levels></div>
+  <div data-badges style="margin:26px 0 30px"></div>
   <p class="note">🎮 學校電腦教室有裝 Minecraft 教育版的話，可以進遊戲裡的「鱻魚特色學園」，跟真的 NPC 對話、自己走到每一站。網頁版的題目和遊戲裡一樣，適合在家複習或用平板上課。</p>
 </main>
 
@@ -198,13 +202,14 @@
     <p class="site-credit">Made with <span class="site-credit__heart" aria-label="愛心">❤️</span> by
       <a href="https://cagoooo.github.io/Akai/" target="_blank" rel="noopener noreferrer" class="site-credit__author">阿凱老師</a>
       <span class="footer-school"><span class="footer-dot" aria-hidden="true">・</span>桃園市龍潭區石門國民小學</span></p>
-    <p class="version-tag">v1.3.0・2026-11-18</p>
+    <p class="version-tag">v1.5.0・2026-11-23</p>
   </div>
   <p class="legal">畫面是 Minecraft 教育版「鱻魚特色學園」課程世界的遊戲截圖。阿凱老師的旁白以 Fish Audio 聲音模型生成，聲音為阿凱老師本人授權。Minecraft 是 Mojang Synergies AB 的商標；本網站為學校教學用途，與 Mojang、Microsoft 沒有關聯。</p>
 </footer>
 
-<script src="assets/js/xianyu-web.js?v=1.4.0"></script>
-<script src="assets/js/xianyu-record.js?v=1.4.1"></script>
+<script src="assets/js/xianyu-web.js?v=1.5.0"></script>
+<script src="assets/js/xianyu-record.js?v=1.5.0"></script>
+<script src="assets/js/xianyu-badges.js?v=1.5.0"></script>
 <script>
 (function () {
   'use strict';

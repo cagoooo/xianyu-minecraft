@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>生活減碳任務｜鱻魚特色學園</title>
+<meta name="description" content="鱻魚特色學園網頁版的生活減碳小遊戲：垃圾分類、隨手關燈、太陽能板找位置、冷氣調到 26～28 度，阿凱老師語音陪你完成，拿分類高手、節電小尖兵、綠能小博士徽章。">
+<meta property="og:title" content="鱻魚特色學園｜生活減碳任務">
+<meta property="og:description" content="垃圾分類、隨手關燈、太陽能板、冷氣溫度，四個每天做得到的減碳小遊戲。">
+<meta property="og:image" content="https://cagoooo.github.io/xianyu-minecraft/assets/solar.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=1.3.0">
+<style>
+  .l-hero { padding: 30px 0 14px; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 28px; align-items: center; }
+  .l-hero h1 { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.2; margin: 10px 0 8px; }
+  .l-hero p.lead { font-size: var(--fs-md); color: var(--ink-soft); margin: 0 0 12px; }
+  .panel { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; }
+  .chips { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 10px 0; }
+  .chips div { background: #f6f1e6; border-radius: 12px; text-align: center; padding: 8px 4px; font-size: var(--fs-sm); }
+  .chips b { display: block; font-size: 1.4rem; line-height: 1.3; }
+  .chips .ok { background: #e6f3e3; color: #2f7d32; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; border: 2px solid var(--line); background: #fff; border-radius: 999px; padding: 6px 14px; font: inherit; font-size: var(--fs-sm); font-weight: 700; cursor: pointer; color: var(--ink); min-height: 40px; white-space: nowrap; }
+  .chip:focus-visible, .bin:focus-visible, .lamp:focus-visible, .opt:focus-visible, .ac button:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+
+  .missions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; padding: 8px 0 20px; }
+  .ms { background: var(--paper); border: 1px solid var(--line); border-top: 8px solid var(--c); border-radius: var(--radius); padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .ms h2 { margin: 0; font-size: var(--fs-lg); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .ms h2 .done { font-size: var(--fs-sm); color: #2f7d32; background: #e6f3e3; border-radius: 999px; padding: 2px 10px; }
+  .ms .say { display: flex; gap: 10px; align-items: flex-start; }
+  .ms .say img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; flex: none; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.15); }
+  .ms .say p { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; flex: 1; font-size: var(--fs-sm); }
+  .fb { min-height: 1.6em; font-weight: 700; font-size: var(--fs-sm); }
+  .fb.good { color: #2f7d32; } .fb.bad { color: #b3352a; }
+
+  /* 垃圾分類 */
+  .item { display: flex; align-items: center; gap: 14px; background: #fff; border: 2px dashed var(--line); border-radius: 14px; padding: 12px 16px; }
+  .item .em { font-size: 2.6rem; line-height: 1; }
+  .item strong { font-size: var(--fs-lg); }
+  .item small { display: block; color: var(--ink-soft); }
+  .bins { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+  .bin { font: inherit; font-weight: 900; font-size: var(--fs-sm); border: 0; border-radius: 12px 12px 6px 6px; padding: 14px 4px 10px; min-height: 76px; cursor: pointer; color: #fff; background: var(--b); box-shadow: inset 0 -6px 0 rgba(0,0,0,.18); line-height: 1.3; }
+  .bin span { display: block; font-size: 1.4rem; }
+  .bin.shake { animation: shake .35s; }
+  .bar { height: 10px; background: #eee6d4; border-radius: 99px; overflow: hidden; }
+  .bar i { display: block; height: 100%; background: var(--leaf); width: 0; transition: width .3s; }
+
+  /* 隨手關燈 */
+  .room { background: #2a3442; border-radius: 14px; padding: 16px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; transition: background .4s; }
+  .room.dark { background: #141a22; }
+  .lamp { font: inherit; border: 0; background: transparent; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; color: #dfe6ee; padding: 6px; border-radius: 12px; }
+  .lamp .bulb { width: 46px; height: 46px; border-radius: 50%; background: #ffe066; box-shadow: 0 0 22px 8px rgba(255,224,102,.6); transition: all .3s; }
+  .lamp .lever { width: 14px; height: 30px; border-radius: 6px; background: #c9ced6; position: relative; }
+  .lamp .lever::after { content: ""; position: absolute; left: -5px; right: -5px; top: 2px; height: 12px; border-radius: 4px; background: #8a5a12; transition: top .2s; }
+  .lamp.off .bulb { background: #5b6472; box-shadow: none; }
+  .lamp.off .lever::after { top: 16px; }
+  .lamp small { font-size: .8rem; }
+
+  /* 太陽能 */
+  .solar-svg { width: 100%; height: auto; background: linear-gradient(#cfe6f5, #eef6fb); border-radius: 14px; }
+  .opts { display: grid; gap: 8px; }
+  .opt { display: flex; gap: 10px; align-items: center; width: 100%; text-align: left; font: inherit; font-weight: 700; padding: 10px 12px; min-height: 52px; border-radius: 12px; border: 3px solid var(--line); background: #fff; cursor: pointer; color: var(--ink); }
+  .opt b { flex: none; width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; color: #fff; }
+  .opt[data-k="0"] b { background: #d9483b; } .opt[data-k="1"] b { background: #d9a514; } .opt[data-k="2"] b { background: #2d72c4; }
+  .opt.wrong { opacity: .5; border-color: #e0a29a; animation: shake .35s; } .opt.right { border-color: #2f7d32; background: #eaf6e8; }
+  .reward { width: 100%; border-radius: 12px; border: 3px solid #fff; box-shadow: 0 4px 14px rgba(0,0,0,.12); }
+
+  /* 冷氣 */
+  .ac { display: flex; align-items: center; justify-content: center; gap: 18px; background: #eef3f8; border-radius: 14px; padding: 18px; flex-wrap: wrap; }
+  .ac .disp { font-size: clamp(2.6rem, 6vw, 3.6rem); font-weight: 900; font-variant-numeric: tabular-nums; background: #1f2a36; color: #7fe3ff; border-radius: 12px; padding: 6px 22px; min-width: 4.2em; text-align: center; }
+  .ac .disp.good { color: #8df08d; }
+  .ac button { font: inherit; font-size: 1.4rem; font-weight: 900; width: 64px; height: 64px; border-radius: 50%; border: 0; background: var(--water); color: #fff; cursor: pointer; box-shadow: 0 4px 0 var(--water-deep); }
+  .ac .lbl { width: 100%; text-align: center; font-size: var(--fs-sm); color: var(--ink-soft); margin: 0; }
+  @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+  @media (prefers-reduced-motion: reduce) { .bin.shake, .opt.wrong { animation: none; } .bar i, .lamp .bulb { transition: none; } }
+
+  @media (max-width: 900px) { .l-hero, .missions { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 640px) {
+    .bins { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .chips { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .chip { flex: 1 1 auto; justify-content: center; }
+  }
+</style>
+</head>
+<body data-page="life">
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="assets/icon.svg" alt="">鱻魚特色學園</a>
+    <nav class="topnav" aria-label="頁面導覽">
+      <a href="quest.html">網頁闖關版</a>
+      <a href="tour.html">360° 虛擬導覽</a>
+      <a href="life.html" aria-current="page">生活減碳</a>
+      <a href="boss.html">魔王關</a>
+      <a href="certificate.html">印證書</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="l-hero">
+    <div>
+      <span class="eyebrow">♻️ 生活減碳任務・每天都做得到</span>
+      <h1>減碳小尖兵<br>四個任務</h1>
+      <p class="lead">垃圾分類、隨手關燈、幫太陽能板找位置、把冷氣調到剛剛好。四件事都完成，就能拿到<strong>分類高手、節電小尖兵、綠能小博士</strong>三枚徽章！</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="chip" type="button" id="hello">🔊 聽阿凱老師說明</button>
+        <button class="chip" type="button" id="mute" aria-pressed="false">🔊 語音開著</button>
+      </div>
+    </div>
+    <div class="panel" aria-live="polite">
+      <strong>我的減碳進度</strong>
+      <div class="chips" id="chips"></div>
+      <div data-who></div>
+    </div>
+  </section>
+
+  <div class="missions">
+    <!-- ① 垃圾分類 -->
+    <section class="ms" id="m-sort" style="--c:var(--leaf)">
+      <h2>♻️ 任務一：垃圾分類 <span class="done" id="sortDone" hidden>✔ 完成</span></h2>
+      <div class="say"><img src="assets/akai.jpg" alt="阿凱老師"><p>每一件東西要丟哪一桶？點下面正確的垃圾桶。分對 10 件就完成任務！</p></div>
+      <div class="item" id="item" aria-live="polite"></div>
+      <div class="bins" id="bins" role="group" aria-label="垃圾桶"></div>
+      <div class="bar" aria-hidden="true"><i id="sortBar"></i></div>
+      <p class="fb" id="sortFb" role="status"></p>
+    </section>
+
+    <!-- ② 隨手關燈 -->
+    <section class="ms" id="m-power" style="--c:var(--sun)">
+      <h2>💡 任務二：隨手關燈 <span class="done" id="powerDone" hidden>✔ 完成</span></h2>
+      <div class="say"><img src="assets/akai.jpg" alt="阿凱老師"><p id="powerSay">放學了，教室沒有人，可是燈還亮著！點每一盞燈下面的拉桿，把燈全部關掉吧～</p></div>
+      <div class="room" id="room" role="group" aria-label="教室的燈"></div>
+      <p class="fb" id="powerFb" role="status"></p>
+    </section>
+
+    <!-- ③ 太陽能小站 -->
+    <section class="ms" id="m-solar" style="--c:#e08a00">
+      <h2>☀️ 任務三：太陽能小站 <span class="done" id="solarDone" hidden>✔ 完成</span></h2>
+      <div class="say"><img src="assets/akai.jpg" alt="阿凱老師"><p>學校要裝太陽能板，裝在哪裡發電最多？想一想：我們這裡中午的太陽，在天空的哪一邊？</p></div>
+      <svg class="solar-svg" viewBox="0 0 400 190" role="img" aria-label="校舍側面圖：左邊是北邊的屋頂，右邊是南邊的屋頂，再往右是一棵大樹">
+        <text x="14" y="26" font-size="16" font-weight="700" fill="#1c6aa8">北 ←</text>
+        <text x="346" y="26" font-size="16" font-weight="700" fill="#1c6aa8">→ 南</text>
+        <rect x="80" y="100" width="180" height="70" fill="#f3f0e8" stroke="#8a8a8a"/>
+        <polygon points="70,104 170,44 270,104" fill="#c8643a" stroke="#7a3a1e"/>
+        <line x1="170" y1="44" x2="170" y2="104" stroke="#7a3a1e" stroke-dasharray="4 4"/>
+        <text x="96" y="92" font-size="13" font-weight="700" fill="#fff">A 北邊屋頂</text>
+        <text x="182" y="92" font-size="13" font-weight="700" fill="#fff">B 南邊屋頂</text>
+        <rect x="335" y="120" width="12" height="50" fill="#7a4a24"/>
+        <circle cx="341" cy="104" r="30" fill="#3f8f3a"/>
+        <text x="300" y="186" font-size="13" font-weight="700" fill="#2b5b28">C 大樹的樹蔭下</text>
+        <line x1="0" y1="170" x2="400" y2="170" stroke="#6b9f50" stroke-width="4"/>
+      </svg>
+      <div class="opts" id="solarOpts"></div>
+      <div id="solarFb"></div>
+    </section>
+
+    <!-- ④ 冷氣 26～28 度 -->
+    <section class="ms" id="m-ac" style="--c:var(--water)">
+      <h2>❄️ 任務四：冷氣溫度 <span class="done" id="acDone" hidden>✔ 完成</span></h2>
+      <div class="say"><img src="assets/akai.jpg" alt="阿凱老師"><p>教室的冷氣開到 22 度，好冷又好耗電。按 ▲ ▼，把冷氣調到 26 到 28 度吧～</p></div>
+      <div class="ac">
+        <button type="button" id="acDown" aria-label="調低 1 度">▼</button>
+        <div class="disp" id="acDisp" aria-live="polite">22°C</div>
+        <button type="button" id="acUp" aria-label="調高 1 度">▲</button>
+        <p class="lbl">建議溫度：26～28°C（台電建議，再搭配電風扇）</p>
+      </div>
+      <p class="fb" id="acFb" role="status"></p>
+    </section>
+  </div>
+
+  <h2 style="margin:6px 0 10px;font-size:clamp(1.3rem,2.2vw,1.8rem)">🗺️ 關卡地圖</h2>
+  <div data-levels></div>
+  <div data-badges style="margin:26px 0 30px"></div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src="assets/icon.svg" alt="" width="48" height="48">
+      <div><strong>鱻魚特色學園</strong><span>石門國小的 Minecraft 教育版課程世界，網頁版讓沒裝遊戲的裝置也能一起學。</span></div>
+    </div>
+    <ul class="footer-points">
+      <li><span class="fp-icon">♻️</span><div><strong>生活減碳</strong><small>垃圾分類、關燈、太陽能、冷氣，每天做得到</small></div></li>
+      <li><span class="fp-icon">🏆</span><div><strong>8 枚徽章</strong><small>完成關卡拿徽章，會印在通關證書上</small></div></li>
+      <li><span class="fp-icon">🔒</span><div><strong>不收姓名</strong><small>不用登入；登記年班座號後，闖關進度會傳給老師</small></div></li>
+    </ul>
+    <nav class="footer-links" aria-label="快速連結">
+      <a href="quest.html">🎯 網頁闖關版</a>
+      <a href="tour.html">🧭 360° 虛擬導覽</a>
+      <a href="boss.html">🛡️ 魔王關</a>
+      <a href="certificate.html">🏅 印通關證書</a>
+      <a href="index.html">🏠 課程首頁</a>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    <p class="site-credit">Made with <span class="site-credit__heart" aria-label="愛心">❤️</span> by
+      <a href="https://cagoooo.github.io/Akai/" target="_blank" rel="noopener noreferrer" class="site-credit__author">阿凱老師</a>
+      <span class="footer-school"><span class="footer-dot" aria-hidden="true">・</span>桃園市龍潭區石門國民小學</span></p>
+    <p class="version-tag">v1.5.0・2026-11-23</p>
+  </div>
+  <p class="legal">冷氣溫度建議依台電公開的省電建議。阿凱老師的旁白以 Fish Audio 聲音模型生成，聲音為阿凱老師本人授權。Minecraft 是 Mojang Synergies AB 的商標；本網站為學校教學用途，與 Mojang、Microsoft 沒有關聯。</p>
+</footer>
+
+<script src="assets/js/xianyu-web.js?v=1.5.0"></script>
+<script src="assets/js/xianyu-record.js?v=1.5.0"></script>
+<script src="assets/js/xianyu-badges.js?v=1.5.0"></script>
+<script>
+(function () {
+  'use strict';
+  var P = window.XianyuProgress, V = window.XianyuVoice, R = window.XianyuRecord;
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  function done(item) { R.log('life', 'life_done', { item: item }); }
+  // 第一次動手時先問年班座號（可以選先不登記）
+  function gate(fn) { return function (e) { var t = this; R.ensure(function () { fn.call(t, e); }); }; }
+
+  // ── 進度小卡 ──
+  function chips() {
+    var l = P.life();
+    var c = [['♻️', '分類 ' + l.recycle + ' 件', l.recycle >= 10], ['💡', '關燈', l.power], ['☀️', '太陽能', l.solar], ['❄️', '冷氣', l.ac]];
+    $('chips').innerHTML = c.map(function (x) { return '<div class="' + (x[2] ? 'ok' : '') + '"><b>' + x[0] + '</b>' + x[1] + (x[2] ? ' ✔' : '') + '</div>'; }).join('');
+    $('sortDone').hidden = l.recycle < 10; $('powerDone').hidden = !l.power; $('solarDone').hidden = !l.solar; $('acDone').hidden = !l.ac;
+    var m = V.muted(); $('mute').setAttribute('aria-pressed', String(!m)); $('mute').textContent = m ? '🔇 語音關著' : '🔊 語音開著';
+  }
+  P.on(chips);
+
+  // ── ① 垃圾分類：桶子顏色與分類跟遊戲裡一樣（scripts/life-tasks.mjs 的 BINS）──
+  var BINS = [
+    { id: 'general', name: '一般垃圾', ic: '🗑️', c: '#333a44' }, { id: 'paper', name: '紙類', ic: '📄', c: '#2d72c4' },
+    { id: 'plastic', name: '塑膠類', ic: '🧴', c: '#c99a10' }, { id: 'metal', name: '鐵鋁罐', ic: '🥫', c: '#7d8794' },
+    { id: 'food', name: '廚餘', ic: '🍂', c: '#3f8f3a' }
+  ];
+  var ITEMS = [
+    { em: '🧴', name: '寶特瓶', bin: 'plastic', tip: '寶特瓶要先倒乾淨、壓扁，再丟塑膠類回收。' },
+    { em: '📄', name: '廢紙', bin: 'paper', tip: '乾淨的紙可以回收做成新的紙；沾到油的紙就不能回收了。' },
+    { em: '🥫', name: '鋁罐', bin: 'metal', tip: '鋁罐回收後可以熔化，重新做成新的罐子。' },
+    { em: '🍌', name: '果皮', bin: 'food', tip: '果皮、菜葉是廚餘，可以拿去做堆肥。' },
+    { em: '🧻', name: '用過的衛生紙', bin: 'general', tip: '用過的衛生紙不能回收，要丟一般垃圾。' },
+    { em: '📰', name: '舊報紙', bin: 'paper', tip: '報紙攤平疊好，丟紙類回收。' },
+    { em: '📦', name: '紙箱', bin: 'paper', tip: '紙箱要拆開壓平，再丟紙類回收。' },
+    { em: '🥫', name: '鐵製罐頭', bin: 'metal', tip: '罐頭先沖乾淨，丟鐵鋁罐回收。' },
+    { em: '🥬', name: '菜葉', bin: 'food', tip: '菜葉是廚餘，可以變成堆肥。' },
+    { em: '🍚', name: '吃剩的飯', bin: 'food', tip: '吃不完的飯菜是廚餘，記得先把湯水瀝乾。' },
+    { em: '😷', name: '用過的口罩', bin: 'general', tip: '用過的口罩不能回收，要丟一般垃圾。' },
+    { em: '🍶', name: '洗乾淨的塑膠瓶', bin: 'plastic', tip: '塑膠瓶罐先沖乾淨，再丟塑膠類回收。' }
+  ];
+  var deck = [], cur = null, round = 0;
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function nextItem() {
+    if (!deck.length) deck = shuffle(ITEMS);
+    cur = deck.pop();
+    $('item').innerHTML = '<span class="em" aria-hidden="true">' + cur.em + '</span><div><strong>' + esc(cur.name) + '</strong><small>要丟哪一桶？</small></div>';
+  }
+  $('bins').innerHTML = BINS.map(function (b) { return '<button class="bin" type="button" data-b="' + b.id + '" style="--b:' + b.c + '"><span aria-hidden="true">' + b.ic + '</span>' + b.name + '</button>'; }).join('');
+  $('bins').addEventListener('click', gate(function (e) {
+    var btn = e.target.closest('.bin'); if (!btn || !cur) return;
+    if (btn.dataset.b !== cur.bin) {
+      btn.classList.remove('shake'); void btn.offsetWidth; btn.classList.add('shake');
+      $('sortFb').className = 'fb bad'; $('sortFb').textContent = '再想想看喔～「' + cur.name + '」不是丟這一桶。';
+      return;
+    }
+    var before = P.life().recycle;
+    P.addRecycle(1); round++;
+    $('sortFb').className = 'fb good'; $('sortFb').textContent = '✔ ' + cur.tip;
+    $('sortBar').style.width = Math.min(100, P.life().recycle * 10) + '%';
+    if (before < 10 && P.life().recycle >= 10) { V.play('recycle'); done('recycle'); $('sortFb').textContent += '　🎉 分對 10 件，拿到「分類高手」徽章！'; }
+    nextItem();
+  }));
+
+  // ── ② 隨手關燈：教室 6 盞燈（遊戲裡也是 6 盞，LAMPS）──
+  var lamps = [];
+  function drawRoom() {
+    $('room').innerHTML = lamps.map(function (on, i) {
+      return '<button class="lamp' + (on ? '' : ' off') + '" type="button" data-i="' + i + '" aria-pressed="' + (!on) + '" aria-label="第 ' + (i + 1) + ' 盞燈' + (on ? '（亮著）' : '（關了）') + '"><span class="bulb"></span><span class="lever"></span><small>' + (on ? '亮著' : '關了') + '</small></button>';
+    }).join('');
+    $('room').classList.toggle('dark', lamps.every(function (x) { return !x; }));
+  }
+  function resetRoom() { lamps = [1, 1, 1, 1, 1, 1]; drawRoom(); }
+  var powerVoiced = false;
+  $('room').addEventListener('click', gate(function (e) {
+    var b = e.target.closest('.lamp'); if (!b) return;
+    if (!powerVoiced) { powerVoiced = true; }
+    var i = +b.dataset.i;
+    lamps[i] = lamps[i] ? 0 : 1;
+    drawRoom();
+    var left = lamps.filter(Boolean).length;
+    if (left === 0) {
+      var first = !P.life().power;
+      P.setLife('power', 1);
+      V.play('powerDone');
+      $('powerFb').className = 'fb good';
+      $('powerFb').textContent = '✔ 全部關好了！隨手關燈可以省電，發電少一點，排放的二氧化碳也會少一點。' + (first ? '' : '（再玩一次也很棒！）');
+      if (first) done('power');
+      setTimeout(resetRoom, 4000);
+    } else {
+      $('powerFb').className = 'fb'; $('powerFb').textContent = '還有 ' + left + ' 盞燈亮著';
+    }
+  }));
+
+  // ── ③ 太陽能小站（題目與答案同遊戲 SOLAR）──
+  var SO = ['北邊的屋頂', '南邊的屋頂', '大樹的樹蔭下'];
+  $('solarOpts').innerHTML = SO.map(function (t, k) { return '<button class="opt" type="button" data-k="' + k + '"><b>' + 'ABC'[k] + '</b>' + t + '</button>'; }).join('');
+  $('solarOpts').addEventListener('click', gate(function (e) {
+    var b = e.target.closest('.opt'); if (!b || b.disabled) return;
+    if (+b.dataset.k !== 1) {
+      b.classList.add('wrong'); b.disabled = true; V.play('quiz_retry');
+      $('solarFb').innerHTML = '<p class="fb bad">再想想看喔～中午的太陽在天空的哪一邊？哪一面屋頂照到最多陽光？</p>';
+      return;
+    }
+    $('solarOpts').querySelectorAll('.opt').forEach(function (o) { o.disabled = true; });
+    b.classList.add('right');
+    var first = !P.life().solar;
+    P.setLife('solar', 1); V.play('solarOk');
+    $('solarFb').innerHTML = '<p class="fb good">✔ 答對了！我們這裡中午的太陽在南邊的天空，朝南的屋頂照到最多陽光。太陽能發電不會排放二氧化碳，是乾淨的能源。</p>' +
+      '<img class="reward" src="assets/solar.jpg" alt="鱻魚學園校舍南邊屋頂裝好的太陽能板" loading="lazy" width="1000" height="560"><button class="chip" type="button" id="solarAgain" style="margin-top:8px">↺ 再玩一次</button>';
+    $('solarAgain').onclick = function () { $('solarFb').innerHTML = ''; $('solarOpts').querySelectorAll('.opt').forEach(function (o) { o.disabled = false; o.className = 'opt'; }); };
+    if (first) done('solar');
+  }));
+
+  // ── ④ 冷氣：起始 22 度，範圍 16～30，26～28 度完成（同遊戲 AC）──
+  var temp = 22;
+  function drawAc() {
+    var good = temp >= 26 && temp <= 28;
+    $('acDisp').textContent = temp + '°C'; $('acDisp').classList.toggle('good', good);
+    return good;
+  }
+  function setTemp(d) {
+    temp = Math.max(16, Math.min(30, temp + d));
+    if (drawAc()) {
+      var first = !P.life().ac;
+      P.setLife('ac', 1);
+      if (first) { V.play('acDone'); done('ac'); }
+      $('acFb').className = 'fb good';
+      $('acFb').textContent = '✔ 設定好了！冷氣每調高 1 度，大約可以省下 6% 的電（台電建議）。26 到 28 度再搭配電風扇，涼快又省電！';
+    } else if (temp > 28) {
+      $('acFb').className = 'fb bad'; $('acFb').textContent = '太熱了！調回 26～28 度比較舒服。';
+    } else {
+      $('acFb').className = 'fb'; $('acFb').textContent = '現在 ' + temp + ' 度，再調高一點。';
+    }
+  }
+  $('acUp').addEventListener('click', gate(function () { setTemp(1); }));
+  $('acDown').addEventListener('click', gate(function () { setTemp(-1); }));
+
+  $('hello').onclick = function () { V.play('web_life_intro'); };
+  $('mute').onclick = function () { V.toggle(); chips(); };
+  nextItem(); resetRoom(); drawAc(); chips();
+  $('sortBar').style.width = Math.min(100, P.life().recycle * 10) + '%';
+})();
+</script>
+</body>
+</html>

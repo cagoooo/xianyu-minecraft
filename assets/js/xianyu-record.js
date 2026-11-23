@@ -28,7 +28,8 @@
       send({
         grade: s.grade, cls: s.cls, seat: s.seat, dev: dev, page: page, ev: ev, item: x.item || '',
         level: P.get().level, sec: x.sec, wrong: x.wrong, qsec: R.qsec(), code: P.code() || '',
-        counts: { st: P.count('stations'), hi: P.count('hi'), lm: P.count('landmarks'), wk: P.count('walk') }
+        counts: { st: P.count('stations'), hi: P.count('hi'), lm: P.count('landmarks'), wk: P.count('walk'),
+          lf: P.lifeDone(), rec: P.life().recycle, boss: P.get().boss ? 1 : 0, bd: P.badgeCount() }
       });
     }
   };

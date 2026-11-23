@@ -102,8 +102,9 @@
     <nav class="topnav" aria-label="頁面導覽">
       <a href="quest.html">網頁闖關版</a>
       <a href="tour.html" aria-current="page">360° 虛擬導覽</a>
+      <a href="life.html">生活減碳</a>
+      <a href="boss.html">魔王關</a>
       <a href="certificate.html">印證書</a>
-      <a href="index.html">課程首頁</a>
     </nav>
   </div>
 </header>
@@ -150,6 +151,9 @@
       </div>
     </aside>
   </div>
+  <h2 style="margin:0 0 10px;font-size:clamp(1.3rem,2.2vw,1.8rem)">🗺️ 關卡地圖</h2>
+  <div data-levels></div>
+  <div data-badges style="margin:26px 0 30px"></div>
   <p class="note" style="margin-top:0">📷 這些環景是在 Minecraft 教育版「鱻魚特色學園」課程世界裡拍的。石門地圖是依 OpenStreetMap 開放資料縮小蓋出來的，跟真實景點的比例、外觀不完全一樣；走讀時請以真實景點的介紹為準。</p>
 </main>
 
@@ -175,14 +179,15 @@
     <p class="site-credit">Made with <span class="site-credit__heart" aria-label="愛心">❤️</span> by
       <a href="https://cagoooo.github.io/Akai/" target="_blank" rel="noopener noreferrer" class="site-credit__author">阿凱老師</a>
       <span class="footer-school"><span class="footer-dot" aria-hidden="true">・</span>桃園市龍潭區石門國民小學</span></p>
-    <p class="version-tag">v1.3.0・2026-11-18</p>
+    <p class="version-tag">v1.5.0・2026-11-23</p>
   </div>
   <p class="legal">環景為 Minecraft 教育版遊戲截圖；環景播放器使用 Pannellum（MIT 授權）。地圖資料 © OpenStreetMap 貢獻者（ODbL 授權）。阿凱老師的旁白以 Fish Audio 聲音模型生成，聲音為阿凱老師本人授權。Minecraft 是 Mojang Synergies AB 的商標；本網站為學校教學用途，與 Mojang、Microsoft 沒有關聯。</p>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/pannellum.js"></script>
-<script src="assets/js/xianyu-web.js?v=1.4.0"></script>
-<script src="assets/js/xianyu-record.js?v=1.4.1"></script>
+<script src="assets/js/xianyu-web.js?v=1.5.0"></script>
+<script src="assets/js/xianyu-record.js?v=1.5.0"></script>
+<script src="assets/js/xianyu-badges.js?v=1.5.0"></script>
 <script>
 (function () {
   'use strict';
