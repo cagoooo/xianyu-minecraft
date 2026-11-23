@@ -99,6 +99,7 @@
         <li>或跟阿凱老師說話，按「我的進度」，聊天框也會出現通關碼。</li>
         <li>繼續完成走讀、生活任務後再按一次「我的進度」，通關碼會更新成最新成績。</li>
         <li>玩<a href="quest.html">網頁闖關版</a>的同學：4 站過關後，畫面上就會出現通關碼。</li>
+        <li>證書會列出拿到的徽章：遊戲版最多 6 枚；「高年級挑戰者」「水庫守護者」要在網頁版拿。</li>
       </ol>
       <p style="margin:10px 0 0">通關碼只在你的瀏覽器裡計算，不會傳到任何地方。</p>
     </div>
@@ -156,13 +157,18 @@
     return n === 0n ? out : null;
   }
   // 徽章規則和 assets/js/xianyu-web.js 的 BADGES 一致
+  // 第 4 欄 true＝遊戲裡拿到的通關碼也算得出來（遊戲碼沒有記高年級站數和魔王關，2026-11-23）
   const BADGES = [
-    ['🏅', '愛水小尖兵', (v) => v.stations >= 4], ['🎓', '高年級挑戰者', (v) => v.hi >= 4],
-    ['🧭', '石門小導遊', (v) => v.landmarks >= 6], ['🌊', '走讀達人', (v) => v.walk >= 7],
-    ['♻️', '分類高手', (v) => v.recycle >= 10], ['💡', '節電小尖兵', (v) => v.power && v.ac],
-    ['☀️', '綠能小博士', (v) => v.solar], ['🛡️', '水庫守護者', (v) => v.boss],
+    ['🏅', '愛水小尖兵', (v) => v.stations >= 4, true], ['🎓', '高年級挑戰者', (v) => v.hi >= 4, false],
+    ['🧭', '石門小導遊', (v) => v.landmarks >= 6, true], ['🌊', '走讀達人', (v) => v.walk >= 7, true],
+    ['♻️', '分類高手', (v) => v.recycle >= 10, true], ['💡', '節電小尖兵', (v) => v.power && v.ac, true],
+    ['☀️', '綠能小博士', (v) => v.solar, true], ['🛡️', '水庫守護者', (v) => v.boss, false],
   ];
-  const badgeLine = (v) => { const got = BADGES.filter((b) => b[2](v)); return got.length ? got.map((b) => b[0]).join(' ') + `（${got.length}/8）` : '－'; };
+  const badgeLine = (v) => {
+    const pool = v.web ? BADGES : BADGES.filter((b) => b[3]);
+    const got = pool.filter((b) => b[2](v));
+    return (got.length ? got.map((b) => b[0]).join(' ') : '－') + `（${got.length}/${pool.length}${v.web ? '' : '，遊戲版'}）`;
+  };
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const mark = (b) => b ? '<span class="ok">✔ 完成</span>' : '<span class="no">－</span>';
@@ -195,7 +201,8 @@
         <tr><td>冷氣調到 26～28 度</td><td>${mark(v.ac)}</td></tr>
         <tr><td>太陽能小站</td><td>${mark(v.solar)}</td></tr>
         <tr><td>生態觀察家</td><td>${v.eco} / 4 種生物</td></tr>
-        <tr><td>綠色交通（步行）</td><td>約 ${(v.walk100m * 100).toLocaleString()} 公尺</td></tr>`}
+        <tr><td>綠色交通（步行）</td><td>約 ${(v.walk100m * 100).toLocaleString()} 公尺</td></tr>
+        <tr><td>獲得徽章</td><td>${badgeLine(v)}</td></tr>`}
       </table>
       <div class="foot">
         <div><div>${roc}</div><div class="code">通關碼 ${esc(code)}</div></div>
