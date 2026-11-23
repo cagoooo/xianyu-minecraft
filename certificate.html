@@ -43,6 +43,15 @@
   .cert td { padding: 1.1% 2%; border-bottom: 1px dashed #e2d6bd; }
   .cert td:last-child { text-align: right; font-weight: 700; white-space: nowrap; }
   .cert .ok { color: #2f7d32; } .cert .no { color: #a0a0a0; }
+  /* 徽章那一列放大（2026-11-23 老師要求）：圖示大、後面的枚數小一點 */
+  .cert td:first-child { white-space: nowrap; }   /* 左邊項目名稱不換行，徽章那格再長也不會擠到它 */
+  .cert tr.bdg-row td { padding-top: 2%; padding-bottom: 2%; vertical-align: middle; }
+  .cert tr.bdg-row td:first-child { font-weight: 700; white-space: nowrap; }
+  .cert tr.bdg-row td:last-child { white-space: normal; }
+  .cert .bdg-ic { font-size: 1.9em; letter-spacing: .04em; line-height: 1.2; vertical-align: middle; white-space: nowrap; }
+  .cert .bdg-n { display: block; font-size: .78em; color: var(--ink-soft); margin-top: 2px; }
+  .cert .bdg-n .nm { white-space: nowrap; }   /* 徽章名稱不要從中間斷開 */
+  @media screen and (max-width: 640px) { .cert .bdg-ic { font-size: 1.3em; white-space: normal; } .cert td:first-child { white-space: normal; } }
   .cert .foot { margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; font-size: clamp(.8rem, 1.6vw, 1rem); }
   .cert .sign { text-align: right; }
   .cert .sign strong { font-family: "Noto Serif TC", serif; font-size: clamp(1rem, 2.2vw, 1.4rem); }
@@ -56,6 +65,7 @@
     .cert-page { display: block; padding: 0; max-width: none; }
     .cert { width: 210mm; height: 297mm; aspect-ratio: auto; box-shadow: none; padding: 18mm 20mm; }
     .cert table { font-size: 13pt; } .cert h2 { font-size: 34pt; } .cert .school { font-size: 16pt; }
+    .cert .bdg-ic { font-size: 23pt; } .cert .bdg-n { font-size: 10pt; }
     .cert .name { font-size: 16pt; } .cert .lead2 { font-size: 13pt; } .cert .foot { font-size: 12pt; }
     * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   }
@@ -167,7 +177,7 @@
   const badgeLine = (v) => {
     const pool = v.web ? BADGES : BADGES.filter((b) => b[3]);
     const got = pool.filter((b) => b[2](v));
-    return (got.length ? got.map((b) => b[0]).join(' ') : '－') + `（${got.length}/${pool.length}${v.web ? '' : '，遊戲版'}）`;
+    return `<span class="bdg-ic">${got.length ? got.map((b) => b[0]).join(' ') : '－'}</span><span class="bdg-n">${got.map((b) => `<span class="nm">${b[1]}</span>`).join('、') || '還沒有徽章'}（${got.length}/${pool.length}${v.web ? '' : '，遊戲版'}）</span>`;
   };
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -194,7 +204,7 @@
         <tr><td>冷氣調到 26～28 度</td><td>${mark(v.ac)}</td></tr>
         <tr><td>太陽能小站</td><td>${mark(v.solar)}</td></tr>
         <tr><td>魔王關・水庫守護者</td><td>${mark(v.boss)}</td></tr>
-        <tr><td>獲得徽章</td><td>${badgeLine(v)}</td></tr>` : ''}
+        <tr class="bdg-row"><td>獲得徽章</td><td>${badgeLine(v)}</td></tr>` : ''}
         ${v.web ? '' : `
         <tr><td>垃圾分類</td><td>${v.recycle >= 99 ? '99 件以上' : v.recycle + ' 件'}</td></tr>
         <tr><td>隨手關燈</td><td>${mark(v.power)}</td></tr>
@@ -202,7 +212,7 @@
         <tr><td>太陽能小站</td><td>${mark(v.solar)}</td></tr>
         <tr><td>生態觀察家</td><td>${v.eco} / 4 種生物</td></tr>
         <tr><td>綠色交通（步行）</td><td>約 ${(v.walk100m * 100).toLocaleString()} 公尺</td></tr>
-        <tr><td>獲得徽章</td><td>${badgeLine(v)}</td></tr>`}
+        <tr class="bdg-row"><td>獲得徽章</td><td>${badgeLine(v)}</td></tr>`}
       </table>
       <div class="foot">
         <div><div>${roc}</div><div class="code">通關碼 ${esc(code)}</div></div>
